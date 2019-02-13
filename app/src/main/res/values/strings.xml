@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">BDV Digital</string>
+
+    <string-array name="servicos">
+        <item>Rota passageiros</item>
+        <item>Atendimento pátio</item>
+        <item>Abastecimento</item>
+        <item>Rota motorista</item>
+    </string-array>
+
+    <string-array name="check_itens">
+        <item>Carroceria - Estado em geral</item>
+        <item>Placas fixadas, legíveis e com lacre</item>
+        <item>Limpadores de para-brisa em funcionamento</item>
+        <item>Água no reservatório para limpeza do para-brisa</item>
+        <item>Farol alto e baixo em perfeita condições</item>
+        <item>Luzes de posição (lanternas)</item>
+        <item>Luz de freio e luz suplementar de freio - Brake-Light</item>
+        <item>Nível de combustível</item>
+        <item>Luz de marcha ré</item>
+        <item>Luzes de direção (setas) e do pisca alerta funcionando</item>
+        <item>Espelhos retrovisores</item>
+        <item>Pneus dianteiros, traseiros e estepe em bom estado de conservação</item>
+        <item>Objetos/bagagens bem acondicionadas/afixadas</item>
+        <item>Poltronas em bom estado</item>
+        <item>Cinto de segurança do tipo três pontos para todos ocupantes do veículo</item>
+        <item>Portas e janelas em bom estado e em funcionamento</item>
+        <item>Nível do óleo</item>
+        <item>Extintor de incêndio com carga de pó ABC</item>
+        <item>Macaco, cahve de roda, triângulo</item>
+        <item>Giroflex</item>
+        <item>Velocímetro em funcionamento</item>
+        <item>Freio de estacionamento em condição de uso</item>
+        <item>Possui grade de proteção do vidro traseiro (para veículos de carga)</item>
+        <item>Existência de 2 coletes refletivos para utilização em caso de emergência</item>
+        <item>Documentação do veículo e condutor em dia</item>
+        <item>Cartão de abastecimento (Good Card)</item>
+        <item>Buzina em funcionamento</item>
+        <item>Encosto de cabeção para todos os ocupantes </item>
+        <item>Amortecedores da tampa traseira (bagageiro) em bom estado</item>
+
+    </string-array>
+
+
+
+    <string name="config_pagina_titulo">Configuração Veículo</string>
+    <string name="info_veiculo">Informações do veículo deste dispositivo</string>
+    <string name="veiculo_cartela_config">Cartela</string>
+    <string name="veiculo_modelo_config">Modelo</string>
+    <string name="veiculo_placa_config">Placa</string>
+    <string name="info_veiculo_senha_config">Senha do administrador</string>
+    <string name="veiculo_senha_config">Senha</string>
+    <string name="checklist_completed">Checklist realizado com sucesso!</string>
+    <string name="checklist_error">Erro ao realizar checklist!</string>
+
+
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>
