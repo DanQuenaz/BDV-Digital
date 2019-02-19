@@ -72,8 +72,11 @@ public class BancoDados extends SQLiteOpenHelper{
                 "km_final real,\n"+
                 "km_total real,\n"+
                 "servico text,\n"+
-                "foto blob,\n"+
-                "sincronizado integer\n"+
+                "reserva boolean,\n"+
+                "placaReserva text,\n"+
+                "nomePassageiro text,\n"+
+                "matriculaPassageiro text,\n"+
+                "sincronizado boolean\n"+
         ");";
         sqLiteDatabase.execSQL(sqlTable2);
 
@@ -151,7 +154,10 @@ public class BancoDados extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal, Float kmInicial, Float kmFinal, Float kmTotal, String servico, byte[] foto){
+    public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
+                             Float kmInicial, Float kmFinal, Float kmTotal, String nomePassageiro, String matriculaPassageiro,
+                             Boolean reserva, String placaReserva, String servico){
+
         ContentValues valores = new ContentValues();
 
         valores.put("motoristaNome", motoristaNome);
@@ -163,8 +169,11 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("km_final", kmFinal);
         valores.put("km_total", kmTotal);
         valores.put("servico", servico);
-        valores.put("foto", foto);
-        valores.put("sincronizado", 0);
+        valores.put("nomePassageiro", nomePassageiro);
+        valores.put("matriculaPassageiro", matriculaPassageiro);
+        valores.put("reserva", reserva);
+        valores.put("placaReserva", placaReserva);
+        valores.put("sincronizado", false);
 
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(tabelaBdv, null, valores) != -1;
@@ -317,11 +326,12 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("km_inicial", cursor.getString(cursor.getColumnIndex("km_inicial")));
                 jo.put("km_final", cursor.getString(cursor.getColumnIndex("km_final")));
                 jo.put("km_total", cursor.getString(cursor.getColumnIndex("km_total")));
-                jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
+                jo.put("nomePassageiro", cursor.getString(cursor.getColumnIndex("nomePassageiro")));
+                jo.put("matriculaPassageiro", cursor.getString(cursor.getColumnIndex("matriculaPassageiro")));
+                jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
+                jo.put("placaReserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
 
-                jo.put("foto", Base64.encodeToString( cursor.getBlob(cursor.getColumnIndex("foto")) , Base64.NO_WRAP));
-
-                Log.i("POS JSON", ""+cursor.getBlob(cursor.getColumnIndex("foto")));
+                //jo.put("foto", Base64.encodeToString( cursor.getBlob(cursor.getColumnIndex("foto")) , Base64.NO_WRAP));
 
                 ja.put(jo);
 

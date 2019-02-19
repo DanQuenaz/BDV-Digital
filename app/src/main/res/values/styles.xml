@@ -6,11 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        
     </style>
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
         <item name="android:textSize">30dp</item>
     </style>
+    
     <style name="spinnerDropDOwnItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
         <item name="android:textSize">20dp</item>
         <item name="android:showDividers">end</item>
@@ -19,5 +22,12 @@
         <item name="android:scrollbarAlwaysDrawVerticalTrack">true</item>
         <item name="android:dropDownHeight">80dp</item>
     </style>
+
+    <style name="AppTheme.CustomTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+
 
 </resources>

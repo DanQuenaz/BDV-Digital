@@ -42,7 +42,6 @@
     </string-array>
 
 
-
     <string name="config_pagina_titulo">Configuração Veículo</string>
     <string name="info_veiculo">Informações do veículo deste dispositivo</string>
     <string name="veiculo_cartela_config">Cartela</string>
@@ -52,7 +51,18 @@
     <string name="veiculo_senha_config">Senha</string>
     <string name="checklist_completed">Checklist realizado com sucesso!</string>
     <string name="checklist_error">Erro ao realizar checklist!</string>
-
+    <string name="campo_obrigatorio">Preencha este campo antes de continuar!</string>
+    <string name="btnIniciaBdv">Iniciar Rota</string>
+    <string name="btnFimBdv">Finalizar Rota</string>
+    <string name="btnAddAssinatura">Adicionar Assinatura</string>
+    <string name="btnAtualizaBDVs">Sincronizar Dados</string>
+    <string name="msg_lista_ass_vazia">É necessário pelo menos uma assinatura para fechar a rota.</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_logar">Entrar</string>
+    <string name="btn_atualizar_motoristas">Atualizar Motoristas</string>
+    <string name="msg_avalicao_necessaria">Avalie o serviço de transporte.</string>
+    <string name="msg_avaliacao_realizada">Avaliação realizada com sucesso!</string>
+    <string name="msg_inicie_rota">É necessario iniciar uma rota para realizar assinaturas.</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

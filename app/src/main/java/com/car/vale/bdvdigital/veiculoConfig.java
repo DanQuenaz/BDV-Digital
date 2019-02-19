@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -11,7 +12,7 @@ import estruturas.WebInterface;
 
 public class veiculoConfig extends AppCompatActivity {
 
-    private ImageButton btnAtlzConfig;
+    private Button btnAtlzConfig;
     private EditText edtVeiculoCartela;
     private EditText edtVeiculoModelo;
     private EditText edtVeiculoPlaca;
@@ -28,7 +29,7 @@ public class veiculoConfig extends AppCompatActivity {
         _tela = this;
 
         this.status = true;
-        this.btnAtlzConfig = (ImageButton)findViewById(R.id.btnConfigVeiculo);
+        this.btnAtlzConfig = (Button)findViewById(R.id.btnConfigVeiculo);
         this.edtVeiculoCartela = (EditText)findViewById(R.id.edtConfigCartela);
         this.edtVeiculoModelo = (EditText)findViewById(R.id.edtConfigModelo);
         this.edtVeiculoPlaca = (EditText)findViewById(R.id.edtConfigPlaca);

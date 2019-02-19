@@ -27,16 +27,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InicioBDV" />
         <activity android:name=".logadoMotorista" />
         <activity android:name=".kmInicial" />
         <activity android:name=".kmFinal" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
         <activity android:name=".veiculoConfig" />
-        <activity android:name=".teste" />
-        <activity android:name=".CheckList"></activity>
+        <activity android:name=".CheckList" />
+        <activity android:name=".assinaturaPassageiro" android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -20,14 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import estruturas.BancoDados;
+import estruturas.CarroReserva;
 import estruturas.Comunicator;
 import estruturas.Motorista;
 import estruturas.WebInterface;
 
 public class MainActivity extends AppCompatActivity {
     private BancoDados db;
-    private ImageButton insereTest;
-    private ImageButton logaMotorista;
+    private Button atualizaMotorista;
+    private Button logaMotorista;
     private ImageButton btnOpenVeiculoConfig;
     private WebInterface ws;
     private Boolean _status;
@@ -50,9 +52,11 @@ public class MainActivity extends AppCompatActivity {
         this.ws = new WebInterface(MainActivity.this);
 
         this.btnOpenVeiculoConfig = (ImageButton) findViewById(R.id.btnOpenVeiculoConfig);
-        this.logaMotorista = (ImageButton) findViewById(R.id.btnLogin);
+        this.logaMotorista = (Button) findViewById(R.id.buttonLogar);
 
         this._status = true;
+
+        CarroReserva.setReserva(false);
 
         this.logaMotorista.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,16 +90,16 @@ public class MainActivity extends AppCompatActivity {
                     startActivity( new Intent(getApplicationContext(), CheckList.class));
                     //finish();
                 }
+                _status = true;
             }
         });
 
-        this.insereTest = (ImageButton) findViewById(R.id.buttonTest);
-        this.insereTest.setOnClickListener(new View.OnClickListener() {
+        this.atualizaMotorista = (Button) findViewById(R.id.buttonAtualizaMotorista);
+        this.atualizaMotorista.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 ws.CallJsonAR(MainActivity.this);
-
 
             }
         });

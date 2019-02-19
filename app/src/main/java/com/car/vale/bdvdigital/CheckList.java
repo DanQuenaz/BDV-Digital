@@ -32,7 +32,7 @@ public class CheckList extends AppCompatActivity {
     public static Activity _reference;
 
     private ListView checkList;
-    private ImageButton btnCheckList;
+    private Button btnCheckList;
 
     private TextView txtMotoristaLogado;
     private TextView txtInfoVeiculo;
@@ -50,7 +50,7 @@ public class CheckList extends AppCompatActivity {
         this.txtMotoristaLogado.setText(Motorista.get_nome());
         this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
 
-        this.btnCheckList = (ImageButton) findViewById(R.id.btnCheckList);
+        this.btnCheckList = (Button) findViewById(R.id.btnCheckList);
         this.checkList = (ListView) findViewById(R.id.list_view_with_checkbox);
 
         final List<ListViewItemDTO> initItemList = this.getInitViewItemDtoList();

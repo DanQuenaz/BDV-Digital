@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:padding="16dp"
+    tools:context="com.car.vale.bdvdigital.assinaturaPassageiro">
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:focusableInTouchMode="true"
+        card_view:cardCornerRadius="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nameTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spacer"
+                android:layout_centerHorizontal="true"
+                android:focusableInTouchMode="true"
+                android:hint="Receita"
+                android:theme="@style/Theme.AppCompat.Light">
+
+                <TextView
+                    android:id="@+id/textRecipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Assinatura Passageiro"
+                    android:textSize="20dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nameTextLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextLayout"
+                android:layout_marginTop="30dp"
+                android:focusableInTouchMode="true"
+                android:hint="Nome"
+                android:theme="@style/Theme.AppCompat.Light">
+
+                <EditText
+                    android:id="@+id/edtNomePassageiro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nameTextLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextLayout1"
+                android:layout_marginTop="30dp"
+                android:focusableInTouchMode="true"
+                android:hint="Matricula"
+                android:theme="@style/Theme.AppCompat.Light">
+
+                <EditText
+                    android:id="@+id/edtMatriculaPassageiro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nameTextLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextLayout2"
+                android:layout_marginTop="30dp"
+                android:focusableInTouchMode="true"
+                android:hint="Observações"
+                android:theme="@style/Theme.AppCompat.Light">
+
+                <EditText
+                    android:id="@+id/edtObservacao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextLayout3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="39dp"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:rating="0"/>
+
+            <Button
+                android:id="@+id/btnOkAss"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_below="@+id/ratingBar"
+                android:layout_marginTop="15dp"
+                android:background="@color/blueAccent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/btn_text_size"
+                android:text="@string/btn_ok" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+
+
+</RelativeLayout>
+

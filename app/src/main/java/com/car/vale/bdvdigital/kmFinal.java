@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -13,15 +14,19 @@ import android.widget.Toast;
 
 import estruturas.BDV;
 import estruturas.BancoDados;
+import estruturas.CarroReserva;
 import estruturas.Comunicator;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 
 public class kmFinal extends AppCompatActivity {
-    private ImageButton btnKmFinal;
+    private Button btnKmFinal;
     private EditText edtKmFinal;
     private TextView txtMotoristaLogado;
     private TextView txtInfoVeiculo;
+    private CheckBox cbReserva;
+    private EditText edtReserva;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +38,18 @@ public class kmFinal extends AppCompatActivity {
         this.txtMotoristaLogado.setText(Motorista.get_nome());
         this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
 
-        this.btnKmFinal = (ImageButton)findViewById(R.id.btnKmFinal);
+        this.btnKmFinal = (Button)findViewById(R.id.btnKmFinal);
         this.edtKmFinal = (EditText)findViewById(R.id.edtKmFinal);
+
+        this.cbReserva = (CheckBox)findViewById(R.id.cbReserva);
+        this.edtReserva = (EditText)findViewById(R.id.edtPlacaReserva);
+
+        if(CarroReserva.getReserva()){
+            this.cbReserva.setChecked(true);
+            this.cbReserva.setEnabled(false);
+            this.edtReserva.setText(CarroReserva.getPlacaReserva());
+            this.edtReserva.setEnabled(false);
+        }
 
         this.btnKmFinal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +72,11 @@ public class kmFinal extends AppCompatActivity {
                                     BDV.getKm_final(),
                                     BDV.getKm_total(),
                                     BDV.getServico(),
-                                    BDV.getFoto()
+                                    "dsdad",
+                                    false,
+                                    "teste",
+                                    "dasdasd"
+
                             )){
                                 BDV.resetBDV();
                                 BDV.setKm_inicial(KmFinal);

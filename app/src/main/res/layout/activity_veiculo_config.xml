@@ -199,16 +199,18 @@
         android:id="@+id/spacer3"
         android:layout_below="@+id/card_view3"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/btnConfigVeiculo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/btn_height"
         android:layout_below="@+id/spacer3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="16dp"
         android:background="@color/blueAccent"
-        android:src="@drawable/ok" />
+        android:textSize="@dimen/btn_text_size"
+        android:textColor="@color/white"
+        android:text="@string/btn_ok" />
 
 
 </RelativeLayout>
