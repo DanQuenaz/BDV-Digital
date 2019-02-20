@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 
 public class BancoDados extends SQLiteOpenHelper{
 
@@ -33,6 +34,7 @@ public class BancoDados extends SQLiteOpenHelper{
     private static final String tabelaMotorista = "motorista";
     private static final String tabelaRota = "rota";
     private static final String tabelaCheckList = "checkList";
+    private static final String tabelaAssinatura = "assinatura";
 
 
     public BancoDados(Context context) {
@@ -74,11 +76,21 @@ public class BancoDados extends SQLiteOpenHelper{
                 "servico text,\n"+
                 "reserva boolean,\n"+
                 "placaReserva text,\n"+
-                "nomePassageiro text,\n"+
-                "matriculaPassageiro text,\n"+
                 "sincronizado boolean\n"+
         ");";
         sqLiteDatabase.execSQL(sqlTable2);
+
+        String sqlTable6 =
+        "create table assinatura(\n" +
+                "assinaturaID integer primary key autoincrement,\n" +
+                "nome_passageiro text,\n" +
+                "matricula_passageiro text,\n" +
+                "observacao text,\n" +
+                "avaliacao integer,\n" +
+                "bdvID integer,\n" +
+                "foreign key (bdvID) references bdv (bdvID)\n" +
+        ");";
+        sqLiteDatabase.execSQL(sqlTable6);
 
         String sqlTable3 =
         "create table rota(\n"+
@@ -154,9 +166,40 @@ public class BancoDados extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
+    public static String getNome_banco() {
+        return nome_banco;
+    }
+
+    public static Integer getVersao() {
+        return versao;
+    }
+
+    public static String getTabelaBdv() {
+        return tabelaBdv;
+    }
+
+    public static String getTabelaDadosConfig() {
+        return tabelaDadosConfig;
+    }
+
+    public static String getTabelaMotorista() {
+        return tabelaMotorista;
+    }
+
+    public static String getTabelaRota() {
+        return tabelaRota;
+    }
+
+    public static String getTabelaCheckList() {
+        return tabelaCheckList;
+    }
+
+    public static String getTabelaAssinatura() {
+        return tabelaAssinatura;
+    }
+
     public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
-                             Float kmInicial, Float kmFinal, Float kmTotal, String nomePassageiro, String matriculaPassageiro,
-                             Boolean reserva, String placaReserva, String servico){
+                             Float kmInicial, Float kmFinal, Float kmTotal, Boolean reserva, String placaReserva, String servico){
 
         ContentValues valores = new ContentValues();
 
@@ -169,14 +212,29 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("km_final", kmFinal);
         valores.put("km_total", kmTotal);
         valores.put("servico", servico);
-        valores.put("nomePassageiro", nomePassageiro);
-        valores.put("matriculaPassageiro", matriculaPassageiro);
         valores.put("reserva", reserva);
         valores.put("placaReserva", placaReserva);
         valores.put("sincronizado", false);
 
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(tabelaBdv, null, valores) != -1;
+    }
+
+    public boolean insereAssinatura(ArrayList<AssinaturaPassageiro> a, Integer bdvID){
+        Boolean _status = true;
+        SQLiteDatabase db = getWritableDatabase();
+        for(AssinaturaPassageiro index : a){
+            ContentValues valores = new ContentValues();
+            valores.put("nome_passageiro", index.getNomePassageiro());
+            valores.put("matricula_passageiro", index.getMatriculaPassageiro());
+            valores.put("observacao", index.getObservacao());
+            valores.put("avaliacao", index.getAvaliacao());
+            valores.put("bdvID", bdvID);
+
+            if(db.insert(tabelaBdv, null, valores) == -1) _status = false;
+        }
+
+        return _status;
     }
 
     public boolean  insereMotorista(String matricula,  String nome, String rg, String cpf, String senha){
@@ -386,6 +444,22 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("sincronizado", false);
 
         return db.insert(tabelaCheckList, null, valores) != -1;
+    }
+
+    public Integer ultimoID(String nomeTabela){
+
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT MAX(id) AS max_id FROM " + nomeTabela;
+        Cursor cursor = db.rawQuery(query, null);
+
+        Integer id = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getInt(0);
+            } while(cursor.moveToNext());
+        }
+
+        return id;
     }
 
     public Bitmap getImage(){

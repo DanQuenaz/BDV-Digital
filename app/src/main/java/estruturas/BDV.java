@@ -13,6 +13,8 @@ public final class BDV {
     private static Float km_inicial;
     private static Float km_final;
     private static String servico;
+    private static Boolean reserva;
+    private static String placaReserva;
     private static byte[] foto;
 
     private BDV(){}
@@ -85,6 +87,22 @@ public final class BDV {
         BDV.servico = servico;
     }
 
+    public static Boolean getReserva() {
+        return reserva;
+    }
+
+    public static void setReserva(Boolean reserva) {
+        BDV.reserva = reserva;
+    }
+
+    public static String getPlacaReserva() {
+        return placaReserva;
+    }
+
+    public static void setPlacaReserva(String placaReserva) {
+        BDV.placaReserva = placaReserva;
+    }
+
     public static byte[] getFoto() {
         return foto;
     }
@@ -109,6 +127,8 @@ public final class BDV {
         km_inicial = null;
         km_final = null;
         servico = null;
+        reserva = null;
+        placaReserva = null;
     }
 
 }

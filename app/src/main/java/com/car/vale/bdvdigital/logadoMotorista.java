@@ -79,6 +79,15 @@ public class logadoMotorista extends AppCompatActivity {
             this.cbReserva.setEnabled(false);
             this.edtReserva.setText(CarroReserva.getPlacaReserva());
             this.edtReserva.setEnabled(false);
+
+            BDV.setReserva(CarroReserva.getReserva());
+            BDV.setPlacaReserva(CarroReserva.getPlacaReserva());
+        }else{
+            this.cbReserva.setEnabled(false);
+            this.edtReserva.setEnabled(false);
+
+            BDV.setReserva(false);
+            BDV.setPlacaReserva(null);
         }
 
         state = true;
