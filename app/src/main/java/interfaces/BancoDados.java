@@ -1,4 +1,4 @@
-package estruturas;
+package interfaces;
 
 /**
  * Created by danqu on 07/11/2018.
@@ -23,6 +23,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+
+import estruturas.AssinaturaPassageiro;
+import estruturas.Coordenada;
+import estruturas.Motorista;
+import estruturas.VeiculoConfig;
 
 public class BancoDados extends SQLiteOpenHelper{
 
@@ -96,7 +101,13 @@ public class BancoDados extends SQLiteOpenHelper{
         "create table rota(\n"+
                 "coordenadaID integer primary key autoincrement,\n"+
                 "longitude real,\n"+
-                "latitude real,\n"+
+                "latitude real,\n" +
+                "altitude real,\n"+
+                "comportamento real,\n" +
+                "velocidade real,\n" +
+                "provedor text,\n" +
+                "acuracia real,\n" +
+                "hora text,\n" +
                 "cont integer,\n"+
                 "bdvID integer,\n"+
 
@@ -231,7 +242,7 @@ public class BancoDados extends SQLiteOpenHelper{
             valores.put("avaliacao", index.getAvaliacao());
             valores.put("bdvID", bdvID);
 
-            if(db.insert(tabelaBdv, null, valores) == -1) _status = false;
+            if(db.insert(tabelaAssinatura, null, valores) == -1) _status = false;
         }
 
         return _status;
@@ -302,6 +313,32 @@ public class BancoDados extends SQLiteOpenHelper{
 
         }
         return false;
+    }
+
+    public boolean insereRota(ArrayList<Coordenada> cords, Integer bdvID){
+        Boolean _status = true;
+        SQLiteDatabase db = getWritableDatabase();
+
+        for(Coordenada c : cords){
+            ContentValues values = new ContentValues();
+
+            values.put("latitude", c.getLatitude());
+            values.put("longitude", c.getLongitude());
+            values.put("altitude", c.getAltitude());
+            values.put("comportamento", c.getComportamento());
+            values.put("velocidade", c.getVelocidade());
+            values.put("provedor", c.getProvedor());
+            values.put("acuracia", c.getAcuracia());
+            values.put("hora", c.getHora());
+            values.put("cont", cords.indexOf(c));
+            values.put("bdvID", bdvID);
+
+
+            if(db.insert(tabelaRota,null, values) == -1) _status = false;
+        }
+
+        return _status;
+
     }
 
     public boolean setVeiculoConfig(){
@@ -378,16 +415,18 @@ public class BancoDados extends SQLiteOpenHelper{
                 JSONObject jo = new JSONObject();
                 jo.put("motoristaNome", cursor.getString(cursor.getColumnIndex("motoristaNome")));
                 jo.put("motoristaID", cursor.getInt(cursor.getColumnIndex("motoristaID")));
-                jo.put("veiculo", cursor.getString(cursor.getColumnIndex("veiculo")));
+                jo.put("frota_veiculo", cursor.getString(cursor.getColumnIndex("veiculo")));
                 jo.put("hora_inicial", cursor.getString(cursor.getColumnIndex("hora_inicial")));
                 jo.put("hora_final", cursor.getString(cursor.getColumnIndex("hora_final")));
                 jo.put("km_inicial", cursor.getString(cursor.getColumnIndex("km_inicial")));
                 jo.put("km_final", cursor.getString(cursor.getColumnIndex("km_final")));
                 jo.put("km_total", cursor.getString(cursor.getColumnIndex("km_total")));
-                jo.put("nomePassageiro", cursor.getString(cursor.getColumnIndex("nomePassageiro")));
-                jo.put("matriculaPassageiro", cursor.getString(cursor.getColumnIndex("matriculaPassageiro")));
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
-                jo.put("placaReserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
+                jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
+                jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
+
+                jo.put("assinaturas", getJSONArrayAss( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
+                jo.put("rota", getJSONArrayCoord( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
 
                 //jo.put("foto", Base64.encodeToString( cursor.getBlob(cursor.getColumnIndex("foto")) , Base64.NO_WRAP));
 
@@ -397,12 +436,67 @@ public class BancoDados extends SQLiteOpenHelper{
             }while(cursor.moveToNext());
 
             cursor.close();
-
+            Log.i("", ja.toString());
             return ja.toString();
         }
 
         return null;
 
+    }
+
+    public JSONArray getJSONArrayAss(Integer bdvID) throws JSONException {
+        JSONArray ja = new JSONArray();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM assinatura WHERE bdvID = " + bdvID;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                JSONObject jo = new JSONObject();
+                jo.put("nome_passageiro", cursor.getString(cursor.getColumnIndex("nome_passageiro")));
+                jo.put("matricula_passageiro", cursor.getString(cursor.getColumnIndex("matricula_passageiro")));
+                jo.put("observacao", cursor.getString(cursor.getColumnIndex("observacao")));
+                jo.put("avaliacao", cursor.getInt(cursor.getColumnIndex("avaliacao")));
+
+                ja.put(jo);
+
+            }while (cursor.moveToNext());
+
+            cursor.close();
+            return ja;
+        }
+
+        return null;
+    }
+
+    public JSONArray getJSONArrayCoord(Integer bdvID) throws JSONException {
+        JSONArray ja = new JSONArray();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM rota WHERE bdvID = " + bdvID;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                JSONObject jo = new JSONObject();
+                jo.put("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
+                jo.put("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
+                jo.put("altitude", cursor.getDouble(cursor.getColumnIndex("altitude")));
+                jo.put("comportamento", cursor.getFloat(cursor.getColumnIndex("comportamento")));
+                jo.put("velocidade", cursor.getFloat(cursor.getColumnIndex("velocidade")));
+                jo.put("provedor", cursor.getString(cursor.getColumnIndex("provedor")));
+                jo.put("acuracia", cursor.getFloat(cursor.getColumnIndex("acuracia")));
+                jo.put("hora", cursor.getString(cursor.getColumnIndex("hora")));
+                jo.put("cont", cursor.getInt(cursor.getColumnIndex("cont")));
+
+                ja.put(jo);
+
+            }while (cursor.moveToNext());
+
+            cursor.close();
+            return ja;
+        }
+
+        return null;
     }
 
     public boolean insereCheckList(String cartela, String motorista, String dia, String horario, Boolean[] checkList){
@@ -449,7 +543,7 @@ public class BancoDados extends SQLiteOpenHelper{
     public Integer ultimoID(String nomeTabela){
 
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT MAX(id) AS max_id FROM " + nomeTabela;
+        String query = "SELECT MAX("+nomeTabela+"ID) AS max_id FROM " + nomeTabela;
         Cursor cursor = db.rawQuery(query, null);
 
         Integer id = 0;
@@ -460,6 +554,25 @@ public class BancoDados extends SQLiteOpenHelper{
         }
 
         return id;
+    }
+
+    public Boolean atualizaStatusBDV(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values =new ContentValues();
+        values.put("sincronizado", 1);
+
+        return db.update(tabelaBdv, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
+    }
+
+    public Boolean checkStatusBDV(){
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT * FROM bdv WHERE sincronizado = 0";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor.moveToFirst();
     }
 
     public Bitmap getImage(){

@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
-import estruturas.WebInterface;
+import interfaces.HttpCon;
 
 public class veiculoConfig extends AppCompatActivity {
 
@@ -64,7 +63,7 @@ public class veiculoConfig extends AppCompatActivity {
                     String _placa = edtVeiculoPlaca.getText().toString();
                     String _senha = edtSenhaVeiculo.getText().toString();
 
-                    WebInterface ws = new WebInterface(getApplicationContext());
+                    HttpCon ws = new HttpCon(getApplicationContext());
 
                     ws.CallPassWordAdmRequest(getApplicationContext(), _senha, _cartela, _modelo, _placa);
 

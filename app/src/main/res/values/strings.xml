@@ -63,6 +63,11 @@
     <string name="msg_avalicao_necessaria">Avalie o serviço de transporte.</string>
     <string name="msg_avaliacao_realizada">Avaliação realizada com sucesso!</string>
     <string name="msg_inicie_rota">É necessario iniciar uma rota para realizar assinaturas.</string>
+    <string name="msg_sem_bdv_dessincronizado">Todos registros já estão sincronzados.</string>
+    <string name="msg_bdvs_sincronizados">Registros sincronizados com sucesso!</string>
+    <string name="msg_bdv_cadastrado">BDV cadastrado com sucesso!</string>
+    <string name="msg_kmfina_maior_kminicial">Km final deve ser maior que o inicial!</string>
+    <string name="msg_inisira_km_final">Insira o Km final antes de finalizar a rota!</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

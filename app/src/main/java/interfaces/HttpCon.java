@@ -1,4 +1,4 @@
-package estruturas;
+package interfaces;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,14 +18,19 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaces.BancoDados;
+import interfaces.CustomJsonArrayRequest;
+import interfaces.CustomJsonObjectRequest;
+import interfaces.CustomStringRequest;
+
 import static com.android.volley.Request.Method;
 
-public class WebInterface {
+public class HttpCon {
     private String url;
     private Map<String, String> params;
     private RequestQueue rq;
 
-    public WebInterface(Context context){
+    public HttpCon(Context context){
         this.url = "https://www.ammeletricistas.com.br/others/bdv_request.php";
         //this.url = "http://172.26.102.129/bdv_digital/bdv_request.php";
         this.rq = Volley.newRequestQueue(context);
@@ -88,8 +93,8 @@ public class WebInterface {
         rq.add(cjar);
     }
 
-    public void CallBDVRequest(final Context context) throws JSONException {
-        BancoDados db = new BancoDados(context);
+    public void CallBDVRequest(final Context context, final String msgOK) throws JSONException {
+        final BancoDados db = new BancoDados(context);
         this.params = new HashMap<String, String>();
         this.params.put("OPX_SET_BDV", db.getJSONArrayBDVs());
         CustomStringRequest cjar = new CustomStringRequest(
@@ -100,9 +105,13 @@ public class WebInterface {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.i("#Script#", "onResponse: " + response);
+                            if(response.compareTo("1#")>=0){
+                                if(db.atualizaStatusBDV()){
+                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+                                }
+                            }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e("Erro rede: ", e.getMessage());
                         }
 
                     }

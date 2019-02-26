@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Permisssões para meios de localização -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -32,7 +36,10 @@
         <activity android:name=".kmFinal" />
         <activity android:name=".veiculoConfig" />
         <activity android:name=".CheckList" />
-        <activity android:name=".assinaturaPassageiro" android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".assinaturaPassageiro"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity android:name=".Teste"></activity>
     </application>
 
 </manifest>

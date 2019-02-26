@@ -1,4 +1,4 @@
-package estruturas;
+package interfaces;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;

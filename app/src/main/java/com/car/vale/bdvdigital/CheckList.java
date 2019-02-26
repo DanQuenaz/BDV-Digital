@@ -1,7 +1,6 @@
 package com.car.vale.bdvdigital;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +21,7 @@ import java.util.Locale;
 
 import adaptadores.ListViewItemCheckboxBaseAdapter;
 import adaptadores.ListViewItemDTO;
-import estruturas.BancoDados;
+import interfaces.BancoDados;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 

@@ -2,14 +2,13 @@ package com.car.vale.bdvdigital;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +17,14 @@ import java.util.ArrayList;
 import estruturas.AssinaturaPassageiro;
 import estruturas.AssinaturasBDV;
 import estruturas.BDV;
-import estruturas.BancoDados;
-import estruturas.CarroReserva;
 import estruturas.Comunicator;
+import estruturas.Coordenada;
+import estruturas.ListaCoordenadas;
+import interfaces.BancoDados;
+import estruturas.CarroReserva;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
+import interfaces.Localizacao;
 
 public class kmFinal extends AppCompatActivity {
     private Button btnKmFinal;
@@ -83,25 +85,31 @@ public class kmFinal extends AppCompatActivity {
                                     BDV.getServico()
                             )){
                                 Integer bdvID = db.ultimoID(BancoDados.getTabelaBdv());
+                                ArrayList<Coordenada> coordenadas = ListaCoordenadas.inicializa();
                                 ArrayList<AssinaturaPassageiro> assinaturas = AssinaturasBDV.getInstance();
-                                if(db.insereAssinatura(assinaturas, bdvID)) {
+                                if(db.insereAssinatura(assinaturas, bdvID) && db.insereRota(coordenadas, bdvID)) {
                                     AssinaturasBDV.clear();
                                     BDV.resetBDV();
                                     BDV.setKm_inicial(KmFinal);
+
+                                    Comunicator.getInstance();
+                                    Localizacao loc = (Localizacao) Comunicator.getItem("Localizacao");
+                                    loc.stopLocationUpdate();
+
                                     Intent intent = new Intent(getApplicationContext(), logadoMotorista.class);
                                     startActivity(intent);
-                                    Toast.makeText(getApplicationContext(), "BDV cadastrado com sucesso.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.msg_bdv_cadastrado), Toast.LENGTH_LONG).show();
                                     _esta.finish();
                                 }
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e("", e.getMessage());
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(), "Km final deve ser maior que o inicial.", Toast.LENGTH_LONG).show();
+                        edtKmFinal.setError(getString(R.string.msg_kmfina_maior_kminicial));
                     }
                 }else{
-                    Toast.makeText(getApplicationContext(), "Insira o Km final antes de finalizar a rota.", Toast.LENGTH_LONG).show();
+                    edtKmFinal.setError(getString(R.string.msg_inisira_km_final));
                 }
             }
         });

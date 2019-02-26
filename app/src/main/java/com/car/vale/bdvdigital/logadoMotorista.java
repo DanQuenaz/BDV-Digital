@@ -1,17 +1,10 @@
 package com.car.vale.bdvdigital;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.pm.ActivityInfoCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,21 +20,19 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import estruturas.AssinaturaPassageiro;
 import estruturas.AssinaturasBDV;
 import estruturas.BDV;
-import estruturas.CarroReserva;
 import estruturas.Comunicator;
+import interfaces.BancoDados;
+import estruturas.CarroReserva;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
-import estruturas.WebInterface;
+import interfaces.HttpCon;
+import interfaces.Localizacao;
 
 public class logadoMotorista extends AppCompatActivity {
     private Button btnBDV;
@@ -49,7 +40,7 @@ public class logadoMotorista extends AppCompatActivity {
     private static Boolean state;
     private Boolean resume;
     private Button btnSyncBdv;
-    private WebInterface ws;
+    private HttpCon ws;
     private Chronometer bdvTimer;
     private TextView txtMotoristaLogado;
     private TextView txtInfoVeiculo;
@@ -57,6 +48,7 @@ public class logadoMotorista extends AppCompatActivity {
     private CheckBox cbReserva;
     private EditText edtReserva;
     private Button btnAddAss;
+    private Localizacao loc;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -73,6 +65,9 @@ public class logadoMotorista extends AppCompatActivity {
 
         this.cbReserva = (CheckBox)findViewById(R.id.cbReserva);
         this.edtReserva = (EditText)findViewById(R.id.edtPlacaReserva);
+
+        this.loc = new Localizacao();
+        this.loc.callConnection(logadoMotorista.this);
 
         if(CarroReserva.getReserva()){
             this.cbReserva.setChecked(true);
@@ -93,7 +88,7 @@ public class logadoMotorista extends AppCompatActivity {
         state = true;
         this.resume = false;
 
-        this.ws = new WebInterface(logadoMotorista.this);
+        this.ws = new HttpCon(logadoMotorista.this);
 
         this.btnSyncBdv = (Button)findViewById(R.id.btnSyncBDV);
         this.spnrServicos = (Spinner)findViewById(R.id.spnrServicos);
@@ -148,6 +143,8 @@ public class logadoMotorista extends AppCompatActivity {
                         bdvTimer.start();
                     }
 
+                    loc.startLocationUpdate();
+
                 }else if(state == false){
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                     String hour = format.format(new Date());
@@ -167,6 +164,10 @@ public class logadoMotorista extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), getString(R.string.msg_lista_ass_vazia),Toast.LENGTH_LONG).show();
                     }
 
+                    Comunicator.getInstance();
+                    Comunicator.clear();
+                    Comunicator.addObject("Localizacao", loc);
+
                 }else{}
             }
         });
@@ -175,7 +176,12 @@ public class logadoMotorista extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    ws.CallBDVRequest(logadoMotorista.this);
+                    BancoDados db = new BancoDados(getApplicationContext());
+                    if(db.checkStatusBDV()) {
+                        ws.CallBDVRequest(logadoMotorista.this, getString(R.string.msg_bdvs_sincronizados));
+                    }else{
+                        Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
