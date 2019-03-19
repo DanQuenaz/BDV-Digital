@@ -1,5 +1,6 @@
 package com.car.vale.bdvdigital;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -18,8 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -27,8 +26,9 @@ import java.util.Locale;
 import estruturas.AssinaturasBDV;
 import estruturas.BDV;
 import estruturas.Comunicator;
+import estruturas.Trajeto;
 import interfaces.BancoDados;
-import estruturas.CarroReserva;
+import estruturas.Configuracao;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 import interfaces.HttpCon;
@@ -49,12 +49,18 @@ public class logadoMotorista extends AppCompatActivity {
     private EditText edtReserva;
     private Button btnAddAss;
     private Localizacao loc;
+    private Boolean count_aux;
+    public static Activity _tela;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logado_motorista);
+
+        _tela = this;
+
+        this.count_aux = false;
 
         this.txtMotoristaLogado = (TextView)findViewById(R.id.pctName);
         this.txtInfoVeiculo = (TextView)findViewById(R.id.pctAge);
@@ -69,14 +75,14 @@ public class logadoMotorista extends AppCompatActivity {
         this.loc = new Localizacao();
         this.loc.callConnection(logadoMotorista.this);
 
-        if(CarroReserva.getReserva()){
+        if(Configuracao.getReserva()){
             this.cbReserva.setChecked(true);
             this.cbReserva.setEnabled(false);
-            this.edtReserva.setText(CarroReserva.getPlacaReserva());
+            this.edtReserva.setText(Configuracao.getPlacaReserva());
             this.edtReserva.setEnabled(false);
 
-            BDV.setReserva(CarroReserva.getReserva());
-            BDV.setPlacaReserva(CarroReserva.getPlacaReserva());
+            BDV.setReserva(Configuracao.getReserva());
+            BDV.setPlacaReserva(Configuracao.getPlacaReserva());
         }else{
             this.cbReserva.setEnabled(false);
             this.edtReserva.setEnabled(false);
@@ -178,11 +184,11 @@ public class logadoMotorista extends AppCompatActivity {
                 try {
                     BancoDados db = new BancoDados(getApplicationContext());
                     if(db.checkStatusBDV()) {
-                        ws.CallBDVRequest(logadoMotorista.this, getString(R.string.msg_bdvs_sincronizados));
+                        startActivity(new Intent(getApplicationContext(), loadingSyncBDV.class));
                     }else{
                         Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -199,6 +205,23 @@ public class logadoMotorista extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(!count_aux){
+            Toast.makeText(getApplicationContext(), getString(R.string.msg_botao_voltar), Toast.LENGTH_LONG).show();
+            count_aux = true;
+        }else{
+            BDV.resetBDV();
+            AssinaturasBDV.clear();
+            Trajeto.clear();
+            Configuracao.setReserva(false);
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            logadoMotorista._tela.finish();
+        }
+
+
     }
 
     /*@Override

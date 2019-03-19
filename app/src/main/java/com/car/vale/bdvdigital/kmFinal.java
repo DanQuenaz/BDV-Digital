@@ -19,9 +19,9 @@ import estruturas.AssinaturasBDV;
 import estruturas.BDV;
 import estruturas.Comunicator;
 import estruturas.Coordenada;
-import estruturas.ListaCoordenadas;
+import estruturas.Trajeto;
 import interfaces.BancoDados;
-import estruturas.CarroReserva;
+import estruturas.Configuracao;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 import interfaces.Localizacao;
@@ -33,14 +33,14 @@ public class kmFinal extends AppCompatActivity {
     private TextView txtInfoVeiculo;
     private CheckBox cbReserva;
     private EditText edtReserva;
-    public static Activity _esta;
+    public static Activity _tela;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_final);
 
-        _esta = this;
+        _tela = this;
 
         this.txtMotoristaLogado = (TextView)findViewById(R.id.pctName1);
         this.txtInfoVeiculo = (TextView)findViewById(R.id.pctAge1);
@@ -54,10 +54,10 @@ public class kmFinal extends AppCompatActivity {
         this.cbReserva = (CheckBox)findViewById(R.id.cbReserva);
         this.edtReserva = (EditText)findViewById(R.id.edtPlacaReserva);
 
-        if(CarroReserva.getReserva()){
+        if(Configuracao.getReserva()){
             this.cbReserva.setChecked(true);
             this.cbReserva.setEnabled(false);
-            this.edtReserva.setText(CarroReserva.getPlacaReserva());
+            this.edtReserva.setText(Configuracao.getPlacaReserva());
             this.edtReserva.setEnabled(false);
         }
 
@@ -80,16 +80,18 @@ public class kmFinal extends AppCompatActivity {
                                     BDV.getKm_inicial(),
                                     BDV.getKm_final(),
                                     BDV.getKm_total(),
+                                    Trajeto.getKmTrajeto().get("TOTAL"),
                                     BDV.getReserva(),
                                     BDV.getPlacaReserva(),
                                     BDV.getServico()
                             )){
                                 Integer bdvID = db.ultimoID(BancoDados.getTabelaBdv());
-                                ArrayList<Coordenada> coordenadas = ListaCoordenadas.inicializa();
+                                ArrayList<Coordenada> coordenadas = Trajeto.inicializa();
                                 ArrayList<AssinaturaPassageiro> assinaturas = AssinaturasBDV.getInstance();
                                 if(db.insereAssinatura(assinaturas, bdvID) && db.insereRota(coordenadas, bdvID)) {
                                     AssinaturasBDV.clear();
                                     BDV.resetBDV();
+                                    Trajeto.clear();
                                     BDV.setKm_inicial(KmFinal);
 
                                     Comunicator.getInstance();
@@ -99,7 +101,7 @@ public class kmFinal extends AppCompatActivity {
                                     Intent intent = new Intent(getApplicationContext(), logadoMotorista.class);
                                     startActivity(intent);
                                     Toast.makeText(getApplicationContext(), getString(R.string.msg_bdv_cadastrado), Toast.LENGTH_LONG).show();
-                                    _esta.finish();
+                                    kmFinal._tela.finish();
                                 }
                             }
                         } catch (Exception e) {

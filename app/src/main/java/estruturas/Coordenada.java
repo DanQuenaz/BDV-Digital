@@ -9,14 +9,19 @@ import java.util.Locale;
 public class Coordenada {
     private Location loc;
     private String hora;
+    private Boolean rodovia;
 
     public Coordenada(){}
 
-    public Coordenada(Location loc) {
+    public Coordenada(Location loc, Boolean rodovia) {
         this.loc = loc;
-
+        this.rodovia = rodovia;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         this.hora = format.format(new Date());
+    }
+
+    public Boolean getRodovia() {
+        return rodovia;
     }
 
     public String getHora() {

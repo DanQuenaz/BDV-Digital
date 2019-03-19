@@ -27,7 +27,7 @@ import estruturas.VeiculoConfig;
 
 public class CheckList extends AppCompatActivity {
 
-    public static Activity _reference;
+    public static Activity _tela;
 
     private ListView checkList;
     private Button btnCheckList;
@@ -40,7 +40,7 @@ public class CheckList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_list);
 
-        _reference = this;
+        _tela = this;
 
         this.txtMotoristaLogado = (TextView)findViewById(R.id.pctName);
         this.txtInfoVeiculo = (TextView)findViewById(R.id.pctAge);
@@ -121,6 +121,7 @@ public class CheckList extends AppCompatActivity {
                             getResources().getString(R.string.checklist_completed),
                             Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), kmInicial.class));
+                    CheckList._tela.finish();
                 }else{
                     Toast.makeText(getApplicationContext(),
                             getResources().getString(R.string.checklist_error),

@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.car.vale.bdvdigital.loadingSyncBDV;
 import com.car.vale.bdvdigital.veiculoConfig;
 
 
@@ -17,11 +18,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import interfaces.BancoDados;
-import interfaces.CustomJsonArrayRequest;
-import interfaces.CustomJsonObjectRequest;
-import interfaces.CustomStringRequest;
 
 import static com.android.volley.Request.Method;
 
@@ -107,6 +103,7 @@ public class HttpCon {
                         try {
                             if(response.compareTo("1#")>=0){
                                 if(db.atualizaStatusBDV()){
+                                    loadingSyncBDV._tela.finish();
                                     Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
                                 }
                             }

@@ -27,7 +27,9 @@ public final class AssinaturasBDV {
     }
 
     public static void clear(){
-        assinaturas.clear();
+        if(assinaturas != null){
+            assinaturas.clear();
+        }
     }
 
 }

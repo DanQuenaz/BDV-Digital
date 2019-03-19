@@ -68,6 +68,8 @@
     <string name="msg_bdv_cadastrado">BDV cadastrado com sucesso!</string>
     <string name="msg_kmfina_maior_kminicial">Km final deve ser maior que o inicial!</string>
     <string name="msg_inisira_km_final">Insira o Km final antes de finalizar a rota!</string>
+    <string name="msg_botao_voltar">Pressione mais uma vez para sair.</string>
+    <string name="titulo_rodovia">Rodovia</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

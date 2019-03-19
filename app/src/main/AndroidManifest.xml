@@ -24,22 +24,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".logadoMotorista" />
-        <activity android:name=".kmInicial" />
-        <activity android:name=".kmFinal" />
-        <activity android:name=".veiculoConfig" />
-        <activity android:name=".CheckList" />
+        <activity
+            android:name=".logadoMotorista"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".kmInicial"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".kmFinal"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".veiculoConfig"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".CheckList"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".assinaturaPassageiro"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.CustomTheme" />
-        <activity android:name=".Teste"></activity>
+
+        <activity android:name=".Teste" />
+        <activity
+            android:name=".loadingSyncBDV"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

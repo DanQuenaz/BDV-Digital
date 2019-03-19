@@ -113,21 +113,33 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@+id/nameTextLayout">
-
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="70"
+                android:orientation="vertical">
                 <Spinner
                     android:id="@+id/spnrServicos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="70"
+                    android:layout_weight="50"
                     android:theme="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem" />
 
-                <Chronometer
-                    android:id="@+id/bdvTimer"
+                <Switch
+                    android:id="@+id/switch1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="30"
-                    android:textSize="45dp" />
+                    android:layout_weight="50"
+                    android:text="@string/titulo_rodovia"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+            <Chronometer
+                android:id="@+id/bdvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="30"
+                android:textSize="45dp" />
             </LinearLayout>
 
 

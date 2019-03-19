@@ -1,6 +1,7 @@
 package com.car.vale.bdvdigital;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 
 
 import interfaces.BancoDados;
-import estruturas.CarroReserva;
+import estruturas.Configuracao;
 import interfaces.HttpCon;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,17 +26,22 @@ public class MainActivity extends AppCompatActivity {
     private HttpCon ws;
     private Boolean _status;
 
+    public static Activity _tela;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        _tela = this;
+
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
         }
 
-        //startActivity(new Intent(this, Teste.class));
+        //startActivity(new Intent(this, loadingSyncBDV.class));
+        //Log.i("", ""+Trajeto.getKmTrajeto(-19.8609648,-43.9494139, -19.8609584,-43.9468089));
 
         this.db = new BancoDados(getBaseContext());
 
@@ -47,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         this._status = true;
 
-        CarroReserva.setReserva(false);
+        Configuracao.setReserva(false);
 
         this.logaMotorista.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(_status){
                     startActivity( new Intent(getApplicationContext(), CheckList.class));
-                    //finish();
+                    MainActivity._tela.finish();
                 }
                 _status = true;
             }
@@ -105,4 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed(){
+        Toast.makeText(getApplicationContext(), "Erro de login!", Toast.LENGTH_LONG).show();
+    }
 }
+

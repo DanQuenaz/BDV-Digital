@@ -77,7 +77,10 @@ public class BancoDados extends SQLiteOpenHelper{
                 "hora_final text,\n"+
                 "km_inicial real,\n"+
                 "km_final real,\n"+
-                "km_total real,\n"+
+                "km_total real,\n" +
+                "km_calculado real,\n" +
+                "km_cidade real,\n" +
+                "km_rodovia real,\n"+
                 "servico text,\n"+
                 "reserva boolean,\n"+
                 "placaReserva text,\n"+
@@ -210,7 +213,8 @@ public class BancoDados extends SQLiteOpenHelper{
     }
 
     public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
-                             Float kmInicial, Float kmFinal, Float kmTotal, Boolean reserva, String placaReserva, String servico){
+                             Float kmInicial, Float kmFinal, Float kmTotal, Double kmCalculado, Boolean reserva,
+                             String placaReserva, String servico){
 
         ContentValues valores = new ContentValues();
 
@@ -222,6 +226,7 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("km_inicial", kmInicial);
         valores.put("km_final", kmFinal);
         valores.put("km_total", kmTotal);
+        valores.put("km_calculado", kmCalculado);
         valores.put("servico", servico);
         valores.put("reserva", reserva);
         valores.put("placaReserva", placaReserva);
@@ -421,6 +426,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("km_inicial", cursor.getString(cursor.getColumnIndex("km_inicial")));
                 jo.put("km_final", cursor.getString(cursor.getColumnIndex("km_final")));
                 jo.put("km_total", cursor.getString(cursor.getColumnIndex("km_total")));
+                jo.put("km_calculado", cursor.getString(cursor.getColumnIndex("km_calculado")));
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
                 jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
                 jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
