@@ -8,4 +8,5 @@
     <color name="blueAccent">#315aab</color>
     <color name="greenLight">#c3ffc6</color>
     <color name="black">#000000</color>
+    <color name="red_logout">#bc1212</color>
 </resources>

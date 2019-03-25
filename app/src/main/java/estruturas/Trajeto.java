@@ -7,7 +7,6 @@ import interfaces.Localizacao;
 
 public final class Trajeto {
     private static ArrayList<Coordenada> coordenadas;
-    private static Double r = 6371000.0;
 
     private Trajeto(){}
 
@@ -56,7 +55,7 @@ public final class Trajeto {
 
         }
 
-        dist.put("TOTOAL", total);
+        dist.put("TOTAL", total);
         dist.put("RODOVIA", rodovia);
         dist.put("CIDADE", cidade);
 

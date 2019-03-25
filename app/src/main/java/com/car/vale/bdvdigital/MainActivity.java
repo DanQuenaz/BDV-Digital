@@ -40,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
         }
 
-        //startActivity(new Intent(this, loadingSyncBDV.class));
+        //startActivity(new Intent(this, cadastroCustoMotorista.class));
         //Log.i("", ""+Trajeto.getKmTrajeto(-19.8609648,-43.9494139, -19.8609584,-43.9468089));
+
+        Configuracao.inicializa();
 
         this.db = new BancoDados(getBaseContext());
 
@@ -95,9 +97,7 @@ public class MainActivity extends AppCompatActivity {
         this.atualizaMotorista.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ws.CallJsonAR(MainActivity.this);
-
+                ws.CallJsonAR(MainActivity.this, getString(R.string.msg_erro_conexao_servidor));
             }
         });
 

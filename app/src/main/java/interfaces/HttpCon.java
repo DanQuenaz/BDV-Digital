@@ -28,7 +28,7 @@ public class HttpCon {
 
     public HttpCon(Context context){
         this.url = "https://www.ammeletricistas.com.br/others/bdv_request.php";
-        //this.url = "http://172.26.102.129/bdv_digital/bdv_request.php";
+        //this.url = "http://172.26.102.129/bdv_digital/app_request/bdv_request.php";
         this.rq = Volley.newRequestQueue(context);
     }
 
@@ -57,7 +57,7 @@ public class HttpCon {
         rq.add(cjor);
     }
 
-    public void CallJsonAR(final Context context){
+    public void CallJsonAR(final Context context, final String msgErro){
         this.params = new HashMap<String, String>();
         this.params.put("OPX_GET_MTR", "OPX_GET_MTR");
         CustomJsonArrayRequest cjar = new CustomJsonArrayRequest(
@@ -81,6 +81,7 @@ public class HttpCon {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("ERORRR", "onResponse: " + error.getMessage());
+                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -89,7 +90,7 @@ public class HttpCon {
         rq.add(cjar);
     }
 
-    public void CallBDVRequest(final Context context, final String msgOK) throws JSONException {
+    public void CallBDVRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
         final BancoDados db = new BancoDados(context);
         this.params = new HashMap<String, String>();
         this.params.put("OPX_SET_BDV", db.getJSONArrayBDVs());
@@ -100,6 +101,7 @@ public class HttpCon {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.e("CHECK", response);
                         try {
                             if(response.compareTo("1#")>=0){
                                 if(db.atualizaStatusBDV()){
@@ -117,6 +119,7 @@ public class HttpCon {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("ERORRR", "onResponse: " + error.getMessage());
+                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
                     }
                 }
         );

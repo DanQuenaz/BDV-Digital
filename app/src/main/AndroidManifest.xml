@@ -38,25 +38,28 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".kmInicial"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".kmFinal"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".veiculoConfig"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CheckList"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".assinaturaPassageiro"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.CustomTheme" />
-
         <activity android:name=".Teste" />
         <activity
             android:name=".loadingSyncBDV"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".cadastroCustoMotorista"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.CustomTheme"/>
     </application>
 
 </manifest>

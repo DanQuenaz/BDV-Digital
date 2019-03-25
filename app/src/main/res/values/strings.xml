@@ -3,7 +3,7 @@
 
     <string-array name="servicos">
         <item>Rota passageiros</item>
-        <item>Atendimento pátio</item>
+        <item>Atendimento patio</item>
         <item>Abastecimento</item>
         <item>Rota motorista</item>
     </string-array>
@@ -70,6 +70,17 @@
     <string name="msg_inisira_km_final">Insira o Km final antes de finalizar a rota!</string>
     <string name="msg_botao_voltar">Pressione mais uma vez para sair.</string>
     <string name="titulo_rodovia">Rodovia</string>
+    <string name="msg_erro_conexao_servidor">Erro ao se conectar ao servidor!</string>
+    <string name="msg_erro_gravar_dados">Erro ao registrar dados.</string>
+    <string name="msg_erro_ler_dados">Erro ao ler dados.</string>
+    <string name="titulo_observacoes">Observações</string>
+    <string name="titulo_check_list">Lista de Itens</string>
+    <string name="titulo_pagina_custo_motorista">Custos Diários</string>
+    <string name="titulo_descricao_custo">Descrição</string>
+    <string name="titulo_valor_custo">Valor</string>
+    <string name="btn_adicionar_custo">Registrar Custo Diário</string>
+    <string name="btn_logout">Sair</string>
+    <string name="msg_custo_cadastrado">Custo diário cadastrado com sucesso.</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

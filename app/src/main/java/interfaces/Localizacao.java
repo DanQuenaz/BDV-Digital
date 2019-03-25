@@ -95,6 +95,9 @@ public class Localizacao implements
 
         if(location.getLatitude() != _latitude || location.getLongitude() != _longitude) {
             if( calculaDistancia(_latitude, _longitude, location.getLatitude(), location.getLongitude()) >= 10.0 ) {
+
+                Log.i("", ""+Configuracao.getRodovia());
+
                 Coordenada cord = new Coordenada(location, Configuracao.getRodovia());
 
                 Trajeto.inicializa();

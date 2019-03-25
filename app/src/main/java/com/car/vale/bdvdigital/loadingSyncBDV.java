@@ -30,7 +30,8 @@ public class loadingSyncBDV extends AppCompatActivity {
         HttpCon ws = new HttpCon(loadingSyncBDV.this);
 
         try {
-            ws.CallBDVRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados));
+            ws.CallBDVRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados),
+                    getString(R.string.msg_erro_conexao_servidor));
         } catch (JSONException e) {
             Log.e("", e.getMessage());
         }

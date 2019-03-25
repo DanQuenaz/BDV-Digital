@@ -24,6 +24,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
+import javax.xml.validation.Validator;
+
 import estruturas.AssinaturaPassageiro;
 import estruturas.Coordenada;
 import estruturas.Motorista;
@@ -40,6 +42,8 @@ public class BancoDados extends SQLiteOpenHelper{
     private static final String tabelaRota = "rota";
     private static final String tabelaCheckList = "checkList";
     private static final String tabelaAssinatura = "assinatura";
+    private static final String tabelaHoraExtra = "hora_extra";
+    private static final String tabelaCustosMotorista = "custos_motorista";
 
 
     public BancoDados(Context context) {
@@ -59,7 +63,7 @@ public class BancoDados extends SQLiteOpenHelper{
         String sqlTable1 =
         "create table motorista(\n"+
                 "motoristaID integer primary key autoincrement,\n"+
-                "matricula text,\n"+
+                "matricula text unique,\n"+
                 "nome text,\n"+
                 "rg text,\n"+
                 "cpf text,\n"+
@@ -131,10 +135,11 @@ public class BancoDados extends SQLiteOpenHelper{
 
         String sqlTable5 =
         "create table checkList(\n"+
+                "checkinID integer primary key autoincrement, \n"+
                 "veiculoCartela text,\n"+
-                "motoristaNome text,\n"+
-                "dia text,\n"+
-                "horario text, \n"+
+                "motoristaNome text,\n" +
+                "motoristaMatricula text, \n"+
+                "dia_hora text,\n"+
                 "item1 boolean, \n"+
                 "item2 boolean, \n"+
                 "item3 boolean, \n"+
@@ -163,11 +168,44 @@ public class BancoDados extends SQLiteOpenHelper{
                 "item26 boolean, \n"+
                 "item27 boolean, \n"+
                 "item28 boolean, \n"+
-                "item29 boolean, \n"+
-                "sincronizado boolean \n"+
+                "item29 boolean, \n" +
+                "observacoes text, \n"+
+                "sincronizado boolean, \n" +
+
+                "foreign key (motoristaMatricula) references motorista (matricula)"+
         ");";
 
         sqLiteDatabase.execSQL(sqlTable5);
+
+        String sqlTable7 =
+                "create table hora_extra(\n"+
+                        "heID text,\n"+
+                        "motorista_matricula text,\n"+
+                        "hora_login text, \n" +
+                        "hora_logout text, \n" +
+                        "hora_primeira_rota text, \n" +
+                        "hora_ultima_rota text, \n" +
+                        "total_hora_logado text, \n" +
+                        "total_hora_rota text, \n" +
+                        "dia_semana text, \n"+
+
+                        "foreign key (motorista_matricula) references motorista (matricula)"+
+                        ");";
+
+        sqLiteDatabase.execSQL(sqlTable7);
+
+        String sqlTable8 =
+                "create table custos_motorista(\n"+
+                        "custoID text,\n"+
+                        "descricao text,\n"+
+                        "data_custo text,\n"+
+                        "valor real, \n" +
+                        "motorista_matricula text, \n"+
+
+                        "foreign key (motorista_matricula) references motorista (matricula)"+
+                        ");";
+
+        sqLiteDatabase.execSQL(sqlTable8);
 
     }
 
@@ -177,6 +215,11 @@ public class BancoDados extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaRota);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaMotorista);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaDadosConfig);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaCheckList);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaAssinatura);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaCustosMotorista);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaHoraExtra);
+
         onCreate(sqLiteDatabase);
     }
 
@@ -212,9 +255,17 @@ public class BancoDados extends SQLiteOpenHelper{
         return tabelaAssinatura;
     }
 
+    public static String getTabelaHoraExtra() {
+        return tabelaHoraExtra;
+    }
+
+    public static String getTabelaCustosMotorista() {
+        return tabelaCustosMotorista;
+    }
+
     public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
-                             Float kmInicial, Float kmFinal, Float kmTotal, Double kmCalculado, Boolean reserva,
-                             String placaReserva, String servico){
+                             Float kmInicial, Float kmFinal, Float kmTotal, Double kmCalculado, Double kmRodovia,
+                             Double kmCidade, Boolean reserva, String placaReserva, String servico){
 
         ContentValues valores = new ContentValues();
 
@@ -227,6 +278,8 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("km_final", kmFinal);
         valores.put("km_total", kmTotal);
         valores.put("km_calculado", kmCalculado);
+        valores.put("km_cidade", kmCidade);
+        valores.put("km_rodovia", kmRodovia);
         valores.put("servico", servico);
         valores.put("reserva", reserva);
         valores.put("placaReserva", placaReserva);
@@ -427,6 +480,8 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("km_final", cursor.getString(cursor.getColumnIndex("km_final")));
                 jo.put("km_total", cursor.getString(cursor.getColumnIndex("km_total")));
                 jo.put("km_calculado", cursor.getString(cursor.getColumnIndex("km_calculado")));
+                jo.put("km_cidade", cursor.getString(cursor.getColumnIndex("km_cidade")));
+                jo.put("km_rodovia", cursor.getString(cursor.getColumnIndex("km_rodovia")));
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
                 jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
                 jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
@@ -505,13 +560,15 @@ public class BancoDados extends SQLiteOpenHelper{
         return null;
     }
 
-    public boolean insereCheckList(String cartela, String motorista, String dia, String horario, Boolean[] checkList){
+    public boolean insereCheckList(String cartela, String motoristaNome, String motoristaMatricula,  String dia_hora,
+                                   String observacoes, Boolean[] checkList){
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues valores = new ContentValues();
         valores.put("veiculoCartela", cartela);
-        valores.put("dia", dia);
-        valores.put("horario", horario);
+        valores.put("dia_hora", dia_hora);
+        valores.put("motoristaNome", motoristaNome);
+        valores.put("motoristaMatricula", motoristaMatricula);
         valores.put("item1", checkList[0]);
         valores.put("item2", checkList[1]);
         valores.put("item3", checkList[2]);
@@ -541,6 +598,7 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("item27", checkList[26]);
         valores.put("item28", checkList[27]);
         valores.put("item29", checkList[28]);
+        valores.put("observacoes", observacoes);
         valores.put("sincronizado", false);
 
         return db.insert(tabelaCheckList, null, valores) != -1;
@@ -579,6 +637,37 @@ public class BancoDados extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
 
         return cursor.moveToFirst();
+    }
+
+    public Boolean insereCustoMotorista(String descricao, String data_custo, Float valor, String matricula){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues valores = new ContentValues();
+
+        valores.put("descricao", descricao);
+        valores.put("data_custo", data_custo);
+        valores.put("valor", valor);
+        valores.put("motorista_matricula", matricula);
+
+        return db.insert(tabelaCustosMotorista,null, valores)!= -1;
+    }
+
+    public Boolean insereHoraExtra(String matricula, String hora_login, String hora_logout, String hora_primeira_rota,
+                                   String hora_ultima_rota, String total_hora_logado, String total_hora_rota,
+                                   String dia_semana){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues valores = new ContentValues();
+
+        valores.put("motorista_matricula", matricula);
+        valores.put("hora_login", hora_login);
+        valores.put("hora_logout", hora_logout);
+        valores.put("hora_primeira_rota", hora_primeira_rota);
+        valores.put("hora_ultima_rota", hora_ultima_rota);
+        valores.put("total_hora_logado", total_hora_logado);
+        valores.put("total_hora_rota", total_hora_rota);
+        valores.put("dia_semana", dia_semana);
+
+        return db.insert(tabelaHoraExtra, null, valores) != -1;
     }
 
     public Bitmap getImage(){

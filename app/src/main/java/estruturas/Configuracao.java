@@ -7,6 +7,12 @@ public final class Configuracao {
 
     private Configuracao(){}
 
+    public static void inicializa(){
+        rodovia = false;
+        reserva = false;
+        placaReserva = "";
+    }
+
     public static Boolean getRodovia() {
         return rodovia;
     }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class CheckList extends AppCompatActivity {
 
     private ListView checkList;
     private Button btnCheckList;
-
+    private EditText edtObsCheckList;
     private TextView txtMotoristaLogado;
     private TextView txtInfoVeiculo;
 
@@ -47,6 +48,8 @@ public class CheckList extends AppCompatActivity {
 
         this.txtMotoristaLogado.setText(Motorista.get_nome());
         this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
+
+        this.edtObsCheckList = (EditText) findViewById(R.id.edtObsCheckList);
 
         this.btnCheckList = (Button) findViewById(R.id.btnCheckList);
         this.checkList = (ListView) findViewById(R.id.list_view_with_checkbox);
@@ -96,11 +99,10 @@ public class CheckList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String dia = format1.format(new Date());
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                String dia_hora = format1.format(new Date());
 
-                SimpleDateFormat format2 = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-                String hora = format2.format(new Date());
+                String observacoes = edtObsCheckList.getText().toString();
 
                 int size = initItemList.size();
                 Boolean[] checkList = new Boolean[30];
@@ -116,7 +118,8 @@ public class CheckList extends AppCompatActivity {
 
                 BancoDados db = new BancoDados(getApplicationContext());
 
-                if(db.insereCheckList(VeiculoConfig.getVeiculoCartela(), Motorista.get_nome(), dia, hora, checkList)){
+                if(db.insereCheckList(VeiculoConfig.getVeiculoCartela(), Motorista.get_nome(), Motorista.get_matricula(), dia_hora,
+                        observacoes, checkList)){
                     Toast.makeText(getApplicationContext(),
                             getResources().getString(R.string.checklist_completed),
                             Toast.LENGTH_LONG).show();

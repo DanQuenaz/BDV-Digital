@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import estruturas.AssinaturaPassageiro;
 import estruturas.AssinaturasBDV;
@@ -69,8 +70,10 @@ public class kmFinal extends AppCompatActivity {
                     BDV.setKm_final(KmFinal);
 
                     if(BDV.checkKM()){
+                        HashMap<String, Double> dist = Trajeto.getKmTrajeto();
+                        Log.i("KM:", dist.get("TOTAL")+" "+dist.get("RODOVIA")+" "+dist.get("CIDADE"));
                         BancoDados db = new BancoDados(getApplicationContext());
-                        try {
+
                             if(db.insereBDV(
                                     Motorista.get_nome(),
                                     Motorista.get_id(),
@@ -80,7 +83,9 @@ public class kmFinal extends AppCompatActivity {
                                     BDV.getKm_inicial(),
                                     BDV.getKm_final(),
                                     BDV.getKm_total(),
-                                    Trajeto.getKmTrajeto().get("TOTAL"),
+                                    dist.get("TOTAL"),
+                                    dist.get("RODOVIA"),
+                                    dist.get("CIDADE"),
                                     BDV.getReserva(),
                                     BDV.getPlacaReserva(),
                                     BDV.getServico()
@@ -93,6 +98,7 @@ public class kmFinal extends AppCompatActivity {
                                     BDV.resetBDV();
                                     Trajeto.clear();
                                     BDV.setKm_inicial(KmFinal);
+                                    Configuracao.setRodovia(false);
 
                                     Comunicator.getInstance();
                                     Localizacao loc = (Localizacao) Comunicator.getItem("Localizacao");
@@ -104,9 +110,7 @@ public class kmFinal extends AppCompatActivity {
                                     kmFinal._tela.finish();
                                 }
                             }
-                        } catch (Exception e) {
-                            Log.e("", e.getMessage());
-                        }
+
                     }else{
                         edtKmFinal.setError(getString(R.string.msg_kmfina_maior_kminicial));
                     }

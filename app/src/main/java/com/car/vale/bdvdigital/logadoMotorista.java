@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ public class logadoMotorista extends AppCompatActivity {
     private Button btnAddAss;
     private Localizacao loc;
     private Boolean count_aux;
+    private Switch swtRodovia;
+    private Button btnAddCusto;
     public static Activity _tela;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -72,6 +75,8 @@ public class logadoMotorista extends AppCompatActivity {
         this.cbReserva = (CheckBox)findViewById(R.id.cbReserva);
         this.edtReserva = (EditText)findViewById(R.id.edtPlacaReserva);
 
+        this.swtRodovia = (Switch)findViewById(R.id.switch1);
+
         this.loc = new Localizacao();
         this.loc.callConnection(logadoMotorista.this);
 
@@ -88,7 +93,7 @@ public class logadoMotorista extends AppCompatActivity {
             this.edtReserva.setEnabled(false);
 
             BDV.setReserva(false);
-            BDV.setPlacaReserva(null);
+            BDV.setPlacaReserva("-");
         }
 
         state = true;
@@ -108,12 +113,10 @@ public class logadoMotorista extends AppCompatActivity {
                     long minutes = ((SystemClock.elapsedRealtime()-bdvTimer.getBase())/1000)/60;
                     long seconds = ((SystemClock.elapsedRealtime()-bdvTimer.getBase())/100)%60;
                     elapsedTime = SystemClock.elapsedRealtime();
-                    Log.d("", ""+minutes+":"+seconds);
                 }else{
                     long minutes = ((SystemClock.elapsedRealtime()-bdvTimer.getBase())/1000)/60;
                     long seconds = ((SystemClock.elapsedRealtime()-bdvTimer.getBase())/100)%60;
                     elapsedTime += 1000;
-                    Log.d("", ""+minutes+":"+seconds);
                 }
             }
         });
@@ -125,6 +128,13 @@ public class logadoMotorista extends AppCompatActivity {
 
         this.btnBDV = (Button)findViewById(R.id.btnBDV);
         this.btnBDV.setBackgroundColor(Color.GREEN);
+
+        this.swtRodovia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Configuracao.setRodovia(swtRodovia.isChecked());
+            }
+        });
 
 
         this.btnBDV.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +213,14 @@ public class logadoMotorista extends AppCompatActivity {
                 }else{
                     Toast.makeText(getApplicationContext(), getString(R.string.msg_inicie_rota),Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        this.btnAddCusto = (Button) findViewById(R.id.btnAddCusto);
+        this.btnAddCusto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), cadastroCustoMotorista.class));
             }
         });
     }

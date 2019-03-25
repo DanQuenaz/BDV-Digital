@@ -180,6 +180,7 @@
         android:text="@string/btnAddAssinatura" />
 
     <Button
+
         android:id="@+id/btnSyncBDV"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
@@ -192,13 +193,31 @@
         android:textColor="@color/white"
         android:text="@string/btnAtualizaBDVs" />
 
-    <ImageView
-        android:id="@+id/imageView5"
+    <Button
+        android:id="@+id/btnAddCusto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_height="@dimen/btn_height"
         android:layout_below="@+id/btnSyncBDV"
-        app:srcCompat="@drawable/transito" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/blueAccent"
+        android:textSize="@dimen/btn_text_size"
+        android:textColor="@color/white"
+        android:text="@string/btn_adicionar_custo" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_below="@+id/btnAddCusto"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/red_logout"
+        android:textSize="@dimen/btn_text_size"
+        android:textColor="@color/white"
+        android:text="@string/btn_logout" />
 
 </RelativeLayout>
 
