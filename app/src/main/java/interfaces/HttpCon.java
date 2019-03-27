@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import estruturas.UploadStatus;
+
 import static com.android.volley.Request.Method;
 
 public class HttpCon {
@@ -101,24 +103,134 @@ public class HttpCon {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("CHECK", response);
+                        Log.e("CHECK_BDV", response);
                         try {
-                            if(response.compareTo("1#")>=0){
+                            if(response.equals("1#")){
                                 if(db.atualizaStatusBDV()){
-                                    loadingSyncBDV._tela.finish();
+                                    UploadStatus.set_bdv(true);
                                     Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
                                 }
                             }
                         } catch (Exception e) {
                             Log.e("Erro rede: ", e.getMessage());
                         }
-
                     }
                 },
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERORRR", "onResponse: " + error.getMessage());
+                        Log.i("ERROR_BDV", "onResponse: " + error.getMessage());
+                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
+        cjar.setTag("tag");
+        rq.add(cjar);
+    }
+
+    public void CallCheckListRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+        final BancoDados db = new BancoDados(context);
+        this.params = new HashMap<String, String>();
+        this.params.put("OPX_SET_CKL", db.getJSONArrayCheckList());
+        CustomStringRequest cjar = new CustomStringRequest(
+                Method.POST,
+                this.url,
+                this.params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("CHECK_CL", response);
+                        try {
+                            if(response.equals("1#")){
+                                if(db.atualizaStatusCheckin()){
+                                    UploadStatus.set_checklist(true);
+                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Erro rede: ", e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("ERROR_CL", "onResponse: " + error.getMessage());
+                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
+        cjar.setTag("tag");
+        rq.add(cjar);
+    }
+
+    public void CallHoraExtraRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+        final BancoDados db = new BancoDados(context);
+        this.params = new HashMap<String, String>();
+        this.params.put("OPX_SET_HRE", db.getJSONArrayHoraExtra());
+        CustomStringRequest cjar = new CustomStringRequest(
+                Method.POST,
+                this.url,
+                this.params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("CHECK_HE", response);
+                        try {
+                            if(response.equals("1#")){
+                                if(db.atualizaStatusHoraExtra()){
+                                    UploadStatus.set_horaextra(true);
+                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Erro rede: ", e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("ERROR_HE", "onResponse: " + error.getMessage());
+                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
+        cjar.setTag("tag");
+        rq.add(cjar);
+    }
+
+    public void CallCustosMotoristaRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+        final BancoDados db = new BancoDados(context);
+        this.params = new HashMap<String, String>();
+        this.params.put("OPX_SET_CSM", db.getJSONArrayCustosMotorista());
+        CustomStringRequest cjar = new CustomStringRequest(
+                Method.POST,
+                this.url,
+                this.params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("CHECK_CM", response);
+                        try {
+                            if(response.equals("1#")){
+                                if(db.atualizaStatusCustosMotorista()){
+                                    UploadStatus.set_custosmotorista(true);
+                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Erro rede: ", e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("ERROR_CM", "onResponse: " + error.getMessage());
                         Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
                     }
                 }

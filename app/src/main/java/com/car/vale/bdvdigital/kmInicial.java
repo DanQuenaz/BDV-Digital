@@ -10,6 +10,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import estruturas.BDV;
 import estruturas.Configuracao;
 import estruturas.Motorista;
@@ -87,6 +91,7 @@ public class kmInicial extends AppCompatActivity {
 
                     Float kmInicail = Float.parseFloat(edtKminicial.getText().toString());
                     BDV.setKm_inicial(kmInicail);
+
 
                     Intent intent = new Intent(getApplicationContext(), logadoMotorista.class);
                     startActivity(intent);

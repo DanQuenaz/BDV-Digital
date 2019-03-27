@@ -45,6 +45,8 @@ public class cadastroCustoMotorista extends AppCompatActivity {
         this.btnOk = (Button) findViewById(R.id.btnOKCustoMotorista);
 
         final CalendarView clndData = (CalendarView) findViewById(R.id.clndCustoMotorista);
+
+
         clndData.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
@@ -72,7 +74,7 @@ public class cadastroCustoMotorista extends AppCompatActivity {
 
                 if(_status){
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    String hour = format.format(new Date(_data[0]));
+                    String hour = format.format(new Date(clndData.getDate()));
                     Log.i("", hour);
                     BancoDados bd = new BancoDados(getApplicationContext());
 

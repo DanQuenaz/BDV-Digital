@@ -12,8 +12,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import estruturas.AssinaturaPassageiro;
 import estruturas.AssinaturasBDV;
@@ -99,6 +102,10 @@ public class kmFinal extends AppCompatActivity {
                                     Trajeto.clear();
                                     BDV.setKm_inicial(KmFinal);
                                     Configuracao.setRodovia(false);
+
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                                    String hour = format.format(new Date());
+                                    Motorista.setHora_ultima_rota(hour);
 
                                     Comunicator.getInstance();
                                     Localizacao loc = (Localizacao) Comunicator.getItem("Localizacao");

@@ -29,6 +29,7 @@ import javax.xml.validation.Validator;
 import estruturas.AssinaturaPassageiro;
 import estruturas.Coordenada;
 import estruturas.Motorista;
+import estruturas.UploadStatus;
 import estruturas.VeiculoConfig;
 
 public class BancoDados extends SQLiteOpenHelper{
@@ -179,7 +180,7 @@ public class BancoDados extends SQLiteOpenHelper{
 
         String sqlTable7 =
                 "create table hora_extra(\n"+
-                        "heID text,\n"+
+                        "heID integer primary key autoincrement,\n"+
                         "motorista_matricula text,\n"+
                         "hora_login text, \n" +
                         "hora_logout text, \n" +
@@ -188,6 +189,7 @@ public class BancoDados extends SQLiteOpenHelper{
                         "total_hora_logado text, \n" +
                         "total_hora_rota text, \n" +
                         "dia_semana text, \n"+
+                        "sincronizado boolean, \n"+
 
                         "foreign key (motorista_matricula) references motorista (matricula)"+
                         ");";
@@ -196,11 +198,12 @@ public class BancoDados extends SQLiteOpenHelper{
 
         String sqlTable8 =
                 "create table custos_motorista(\n"+
-                        "custoID text,\n"+
+                        "custoID integer primary key autoincrement,\n"+
                         "descricao text,\n"+
                         "data_custo text,\n"+
                         "valor real, \n" +
-                        "motorista_matricula text, \n"+
+                        "motorista_matricula text, \n" +
+                        "sincronizado boolean, \n"+
 
                         "foreign key (motorista_matricula) references motorista (matricula)"+
                         ");";
@@ -455,7 +458,6 @@ public class BancoDados extends SQLiteOpenHelper{
 
     public String getJSONArrayBDVs() throws JSONException {
         JSONArray ja = new JSONArray();
-
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 tabelaBdv,
@@ -466,8 +468,6 @@ public class BancoDados extends SQLiteOpenHelper{
                 null,
                 null
         );
-
-
         if(cursor.moveToFirst()){
             do {
                 JSONObject jo = new JSONObject();
@@ -485,24 +485,16 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
                 jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
                 jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
-
                 jo.put("assinaturas", getJSONArrayAss( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
                 jo.put("rota", getJSONArrayCoord( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
-
                 //jo.put("foto", Base64.encodeToString( cursor.getBlob(cursor.getColumnIndex("foto")) , Base64.NO_WRAP));
-
                 ja.put(jo);
-
-
             }while(cursor.moveToNext());
-
             cursor.close();
             Log.i("", ja.toString());
             return ja.toString();
         }
-
         return null;
-
     }
 
     public JSONArray getJSONArrayAss(Integer bdvID) throws JSONException {
@@ -557,6 +549,124 @@ public class BancoDados extends SQLiteOpenHelper{
             return ja;
         }
 
+        return null;
+    }
+
+    public String getJSONArrayCheckList() throws JSONException{
+        JSONArray ja = new JSONArray();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                tabelaCheckList,
+                new String[]{"*"},
+                new String ("sincronizado = ?"),
+                new String[]{"0"},
+                null,
+                null,
+                null
+        );
+        if(cursor.moveToFirst()){
+            do {
+                JSONObject jo = new JSONObject();
+                jo.put("veiculoCartela", cursor.getString(cursor.getColumnIndex("veiculoCartela")));
+                jo.put("motoristaNome", cursor.getString(cursor.getColumnIndex("motoristaNome")));
+                jo.put("motoristaMatricula", cursor.getString(cursor.getColumnIndex("motoristaMatricula")));
+                jo.put("dia_hora", cursor.getString(cursor.getColumnIndex("dia_hora")));
+                jo.put("item1", cursor.getShort(cursor.getColumnIndex("item1")));
+                jo.put("item2", cursor.getShort(cursor.getColumnIndex("item2")));
+                jo.put("item3", cursor.getShort(cursor.getColumnIndex("item3")));
+                jo.put("item4", cursor.getShort(cursor.getColumnIndex("item4")));
+                jo.put("item5", cursor.getShort(cursor.getColumnIndex("item5")));
+                jo.put("item6", cursor.getShort(cursor.getColumnIndex("item6")));
+                jo.put("item7", cursor.getShort(cursor.getColumnIndex("item7")));
+                jo.put("item8", cursor.getShort(cursor.getColumnIndex("item8")));
+                jo.put("item9", cursor.getShort(cursor.getColumnIndex("item9")));
+                jo.put("item10", cursor.getShort(cursor.getColumnIndex("item10")));
+                jo.put("item11", cursor.getShort(cursor.getColumnIndex("item11")));
+                jo.put("item12", cursor.getShort(cursor.getColumnIndex("item12")));
+                jo.put("item13", cursor.getShort(cursor.getColumnIndex("item13")));
+                jo.put("item14", cursor.getShort(cursor.getColumnIndex("item14")));
+                jo.put("item15", cursor.getShort(cursor.getColumnIndex("item15")));
+                jo.put("item16", cursor.getShort(cursor.getColumnIndex("item16")));
+                jo.put("item17", cursor.getShort(cursor.getColumnIndex("item17")));
+                jo.put("item18", cursor.getShort(cursor.getColumnIndex("item18")));
+                jo.put("item19", cursor.getShort(cursor.getColumnIndex("item19")));
+                jo.put("item20", cursor.getShort(cursor.getColumnIndex("item20")));
+                jo.put("item21", cursor.getShort(cursor.getColumnIndex("item21")));
+                jo.put("item22", cursor.getShort(cursor.getColumnIndex("item22")));
+                jo.put("item23", cursor.getShort(cursor.getColumnIndex("item23")));
+                jo.put("item24", cursor.getShort(cursor.getColumnIndex("item24")));
+                jo.put("item25", cursor.getShort(cursor.getColumnIndex("item25")));
+                jo.put("item26", cursor.getShort(cursor.getColumnIndex("item26")));
+                jo.put("item27", cursor.getShort(cursor.getColumnIndex("item27")));
+                jo.put("item28", cursor.getShort(cursor.getColumnIndex("item28")));
+                jo.put("item29", cursor.getShort(cursor.getColumnIndex("item29")));
+                jo.put("observacoes", cursor.getString(cursor.getColumnIndex("observacoes")));
+                ja.put(jo);
+            }while(cursor.moveToNext());
+            cursor.close();
+            Log.i("", ja.toString());
+            return ja.toString();
+        }
+        return null;
+    }
+
+    public String getJSONArrayHoraExtra() throws JSONException{
+        JSONArray ja = new JSONArray();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                tabelaHoraExtra,
+                new String[]{"*"},
+                new String ("sincronizado = ?"),
+                new String[]{"0"},
+                null,
+                null,
+                null
+        );
+        if(cursor.moveToFirst()){
+            do {
+                JSONObject jo = new JSONObject();
+                jo.put("motorista_matricula", cursor.getString(cursor.getColumnIndex("motorista_matricula")));
+                jo.put("hora_login", cursor.getString(cursor.getColumnIndex("hora_login")));
+                jo.put("hora_logout", cursor.getString(cursor.getColumnIndex("hora_logout")));
+                jo.put("hora_primeira_rota", cursor.getString(cursor.getColumnIndex("hora_primeira_rota")));
+                jo.put("hora_ultima_rota", cursor.getString(cursor.getColumnIndex("hora_ultima_rota")));
+                jo.put("total_hora_logado", cursor.getString(cursor.getColumnIndex("total_hora_logado")));
+                jo.put("total_hora_rota", cursor.getString(cursor.getColumnIndex("total_hora_rota")));
+                jo.put("dia_semana", cursor.getString(cursor.getColumnIndex("dia_semana")));
+                ja.put(jo);
+            }while(cursor.moveToNext());
+            cursor.close();
+            Log.i("", ja.toString());
+            return ja.toString();
+        }
+        return null;
+    }
+
+    public String getJSONArrayCustosMotorista() throws JSONException{
+        JSONArray ja = new JSONArray();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                tabelaCustosMotorista,
+                new String[]{"*"},
+                new String ("sincronizado = ?"),
+                new String[]{"0"},
+                null,
+                null,
+                null
+        );
+        if(cursor.moveToFirst()){
+            do {
+                JSONObject jo = new JSONObject();
+                jo.put("descricao", cursor.getString(cursor.getColumnIndex("descricao")));
+                jo.put("data_custo", cursor.getString(cursor.getColumnIndex("data_custo")));
+                jo.put("valor", cursor.getString(cursor.getColumnIndex("valor")));
+                jo.put("motorista_matricula", cursor.getString(cursor.getColumnIndex("motorista_matricula")));
+                ja.put(jo);
+            }while(cursor.moveToNext());
+            cursor.close();
+            Log.i("JSONARRAY:", ja.toString());
+            return ja.toString();
+        }
         return null;
     }
 
@@ -622,42 +732,87 @@ public class BancoDados extends SQLiteOpenHelper{
 
     public Boolean atualizaStatusBDV(){
         SQLiteDatabase db = getWritableDatabase();
-
         ContentValues values =new ContentValues();
-        values.put("sincronizado", 1);
-
+        values.put("sincronizado", true);
         return db.update(tabelaBdv, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
     }
 
+    public Boolean atualizaStatusCheckin(){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values =new ContentValues();
+        values.put("sincronizado", true);
+        return db.update(tabelaCheckList, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
+    }
+
+    public Boolean atualizaStatusHoraExtra(){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values =new ContentValues();
+        values.put("sincronizado", true);
+        return db.update(tabelaHoraExtra, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
+    }
+
+    public Boolean atualizaStatusCustosMotorista(){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values =new ContentValues();
+        values.put("sincronizado", true);
+        return db.update(tabelaCustosMotorista, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
+    }
+
     public Boolean checkStatusBDV(){
+        Boolean aux;
         SQLiteDatabase db = getReadableDatabase();
-
-        String query = "SELECT * FROM bdv WHERE sincronizado = 0";
-
+        String query = "SELECT * FROM " + tabelaBdv + " WHERE sincronizado = 0";
         Cursor cursor = db.rawQuery(query, null);
+        aux =  cursor.moveToFirst();
+        UploadStatus.set_bdv(!aux);
+        return aux;
+    }
 
-        return cursor.moveToFirst();
+    public Boolean checkStatusCheckin(){
+        Boolean aux;
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + tabelaCheckList + " WHERE sincronizado = 0";
+        Cursor cursor = db.rawQuery(query, null);
+        aux =  cursor.moveToFirst();
+        UploadStatus.set_checklist(!aux);
+        return aux;
+    }
+
+    public Boolean checkStatusHoraExtra(){
+        Boolean aux;
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + tabelaHoraExtra + " WHERE sincronizado = 0";
+        Cursor cursor = db.rawQuery(query, null);
+        aux =  cursor.moveToFirst();
+        UploadStatus.set_horaextra(!aux);
+        return aux;
+    }
+
+    public Boolean checkStatusCustosMotorista(){
+        Boolean aux;
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + tabelaCustosMotorista + " WHERE sincronizado = 0";
+        Cursor cursor = db.rawQuery(query, null);
+        aux =  cursor.moveToFirst();
+        UploadStatus.set_custosmotorista(!aux);
+        return aux;
     }
 
     public Boolean insereCustoMotorista(String descricao, String data_custo, Float valor, String matricula){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues valores = new ContentValues();
-
         valores.put("descricao", descricao);
         valores.put("data_custo", data_custo);
         valores.put("valor", valor);
         valores.put("motorista_matricula", matricula);
-
+        valores.put("sincronizado", false);
         return db.insert(tabelaCustosMotorista,null, valores)!= -1;
     }
 
     public Boolean insereHoraExtra(String matricula, String hora_login, String hora_logout, String hora_primeira_rota,
-                                   String hora_ultima_rota, String total_hora_logado, String total_hora_rota,
-                                   String dia_semana){
+                                   String hora_ultima_rota, String total_hora_logado, String total_hora_rota, String dia_semana){
         SQLiteDatabase db = getWritableDatabase();
-
         ContentValues valores = new ContentValues();
-
         valores.put("motorista_matricula", matricula);
         valores.put("hora_login", hora_login);
         valores.put("hora_logout", hora_logout);
@@ -666,7 +821,7 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("total_hora_logado", total_hora_logado);
         valores.put("total_hora_rota", total_hora_rota);
         valores.put("dia_semana", dia_semana);
-
+        valores.put("sincronizado", false);
         return db.insert(tabelaHoraExtra, null, valores) != -1;
     }
 

@@ -81,6 +81,9 @@
     <string name="btn_adicionar_custo">Registrar Custo Diário</string>
     <string name="btn_logout">Sair</string>
     <string name="msg_custo_cadastrado">Custo diário cadastrado com sucesso.</string>
+    <string name="erro_logout">Erro ao efetuar logout.</string>
+    <string name="info_todos_dados_sync">Todos os dados estão sincronizados.</string>
+    <string name="info_dados_nao_sync">Existem dados que ainda não foram sincronizados.</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

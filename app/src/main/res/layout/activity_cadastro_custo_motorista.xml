@@ -79,24 +79,29 @@
                     android:inputType="numberDecimal"/>
 
             </android.support.design.widget.TextInputLayout>
-
-            <CalendarView
-                android:id="@+id/clndCustoMotorista"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nameTextLayout2"
-                android:layout_marginTop="10dp"/>
+                android:orientation="vertical"
+                android:layout_below="@+id/nameTextLayout2">
+                <CalendarView
+                    android:id="@+id/clndCustoMotorista"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="0.8"/>
 
-            <Button
-                android:id="@+id/btnOKCustoMotorista"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
-                android:layout_below="@+id/clndCustoMotorista"
-                android:layout_marginTop="15dp"
-                android:background="@color/blueAccent"
-                android:textColor="@color/white"
-                android:textSize="@dimen/btn_text_size"
-                android:text="@string/btn_ok" />
+                <Button
+                    android:id="@+id/btnOKCustoMotorista"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_weight="0.2"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/blueAccent"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/btn_text_size"
+                    android:text="@string/btn_ok" />
+            </LinearLayout>
 
         </RelativeLayout>
 

@@ -14,6 +14,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import estruturas.Motorista;
 import interfaces.BancoDados;
 import estruturas.Configuracao;
 import interfaces.HttpCon;
@@ -86,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if(_status){
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    String hour = format.format(new Date());
+
+                    Motorista.setHora_login(hour);
+
                     startActivity( new Intent(getApplicationContext(), CheckList.class));
                     MainActivity._tela.finish();
                 }
