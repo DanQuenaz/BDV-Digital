@@ -9,12 +9,13 @@ import android.widget.EditText;
 
 import interfaces.HttpCon;
 
-public class veiculoConfig extends AppCompatActivity {
+public class veiculoConfig extends Activity {
 
     private Button btnAtlzConfig;
     private EditText edtVeiculoCartela;
     private EditText edtVeiculoModelo;
     private EditText edtVeiculoPlaca;
+    private EditText edtVeiculoCC;
     private EditText edtSenhaVeiculo;
     private boolean status;
     public static Activity _tela;
@@ -32,6 +33,7 @@ public class veiculoConfig extends AppCompatActivity {
         this.edtVeiculoCartela = (EditText)findViewById(R.id.edtConfigCartela);
         this.edtVeiculoModelo = (EditText)findViewById(R.id.edtConfigModelo);
         this.edtVeiculoPlaca = (EditText)findViewById(R.id.edtConfigPlaca);
+        this.edtVeiculoCC = (EditText)findViewById(R.id.edtConfigCC);
         this.edtSenhaVeiculo = (EditText)findViewById(R.id.edtSenhaConfig);
 
         this.btnAtlzConfig.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +54,11 @@ public class veiculoConfig extends AppCompatActivity {
                     status = false;
                 }
 
+                if(edtVeiculoCC.getText().toString().isEmpty() ){
+                    edtVeiculoCC.setError(getString(R.string.error_field_required));
+                    status = false;
+                }
+
                 if(edtSenhaVeiculo.getText().toString().isEmpty() ){
                     edtSenhaVeiculo.setError(getString(R.string.error_field_required));
                     status = false;
@@ -61,11 +68,13 @@ public class veiculoConfig extends AppCompatActivity {
                     String _cartela = edtVeiculoCartela.getText().toString();
                     String _modelo = edtVeiculoModelo.getText().toString();
                     String _placa = edtVeiculoPlaca.getText().toString();
+                    String _cc = edtVeiculoCC.getText().toString();
                     String _senha = edtSenhaVeiculo.getText().toString();
+
 
                     HttpCon ws = new HttpCon(getApplicationContext());
 
-                    ws.CallPassWordAdmRequest(getApplicationContext(), _senha, _cartela, _modelo, _placa);
+                    ws.CallPassWordAdmRequest(getApplicationContext(), _senha, _cartela, _modelo, _placa, _cc);
 
 
                 }

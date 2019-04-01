@@ -44,22 +44,23 @@
 
     <string name="config_pagina_titulo">Configuração Veículo</string>
     <string name="info_veiculo">Informações do veículo deste dispositivo</string>
-    <string name="veiculo_cartela_config">Cartela</string>
+    <string name="veiculo_cartela_config">Frota</string>
     <string name="veiculo_modelo_config">Modelo</string>
     <string name="veiculo_placa_config">Placa</string>
+    <string name="veiculo_cc_config">Centro de custo</string>
     <string name="info_veiculo_senha_config">Senha do administrador</string>
     <string name="veiculo_senha_config">Senha</string>
     <string name="checklist_completed">Checklist realizado com sucesso!</string>
     <string name="checklist_error">Erro ao realizar checklist!</string>
     <string name="campo_obrigatorio">Preencha este campo antes de continuar!</string>
-    <string name="btnIniciaBdv">Iniciar Rota</string>
-    <string name="btnFimBdv">Finalizar Rota</string>
-    <string name="btnAddAssinatura">Adicionar Assinatura</string>
-    <string name="btnAtualizaBDVs">Sincronizar Dados</string>
+    <string name="btnIniciaBdv">INICIAR ROTA</string>
+    <string name="btnFimBdv">FINALIZAR ROTA</string>
+    <string name="btnAddAssinatura">ADICIONAR ASSINATURA</string>
+    <string name="btnAtualizaBDVs">SINCRONIZAR DADOS</string>
     <string name="msg_lista_ass_vazia">É necessário pelo menos uma assinatura para fechar a rota.</string>
     <string name="btn_ok">OK</string>
-    <string name="btn_logar">Entrar</string>
-    <string name="btn_atualizar_motoristas">Atualizar Motoristas</string>
+    <string name="btn_logar">ENTRAR</string>
+    <string name="btn_atualizar_motoristas">ATUALIZAR MOTORISTAS</string>
     <string name="msg_avalicao_necessaria">Avalie o serviço de transporte.</string>
     <string name="msg_avaliacao_realizada">Avaliação realizada com sucesso!</string>
     <string name="msg_inicie_rota">É necessario iniciar uma rota para realizar assinaturas.</string>
@@ -79,11 +80,16 @@
     <string name="titulo_descricao_custo">Descrição</string>
     <string name="titulo_valor_custo">Valor</string>
     <string name="btn_adicionar_custo">Registrar Custo Diário</string>
-    <string name="btn_logout">Sair</string>
+    <string name="btn_logout">SAIR</string>
     <string name="msg_custo_cadastrado">Custo diário cadastrado com sucesso.</string>
     <string name="erro_logout">Erro ao efetuar logout.</string>
     <string name="info_todos_dados_sync">Todos os dados estão sincronizados.</string>
     <string name="info_dados_nao_sync">Existem dados que ainda não foram sincronizados.</string>
+    <string name="erro_nome_wifi">É necessário estar conectado a rede V-DATA para sincronização dos dados.</string>
+    <string name="msg_finalize_rota">Finalize a rota antes de realizar esta operação.</string>
+    <string name="erro_senha_diferente">Senhas não conferem!</string>
+
+    <string name="WIFI_NAME">\"Pimentel\"</string>
 
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->

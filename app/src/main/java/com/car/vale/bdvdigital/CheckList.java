@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,7 +28,7 @@ import interfaces.BancoDados;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 
-public class CheckList extends AppCompatActivity {
+public class CheckList extends Activity {
 
     public static Activity _tela;
 
@@ -135,7 +137,30 @@ public class CheckList extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuItem m1 = menu.add(0,0,0,"SAIR");
+        m1.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int parse, MenuItem id){
+
+        switch(id.getItemId()){
+            case 0:
+                deslogar();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(CheckList.this, MainActivity.class));
+        CheckList._tela.finish();
+    }
 
     private List<ListViewItemDTO> getInitViewItemDtoList() {
         String itemTextArr[] = getResources().getStringArray( R.array.check_itens);
@@ -156,5 +181,11 @@ public class CheckList extends AppCompatActivity {
 
         return ret;
     }
+
+    private void deslogar(){
+        startActivity(new Intent(CheckList.this, MainActivity.class));
+        CheckList._tela.finish();
+    }
+
 
 }

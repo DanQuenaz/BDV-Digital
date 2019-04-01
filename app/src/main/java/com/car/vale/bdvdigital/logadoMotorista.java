@@ -1,8 +1,13 @@
 package com.car.vale.bdvdigital;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
@@ -10,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,7 +46,7 @@ import estruturas.VeiculoConfig;
 import interfaces.HttpCon;
 import interfaces.Localizacao;
 
-public class logadoMotorista extends AppCompatActivity {
+public class logadoMotorista extends Activity {
     private Button btnBDV;
     private Spinner spnrServicos;
     private static Boolean state;
@@ -56,8 +63,8 @@ public class logadoMotorista extends AppCompatActivity {
     private Localizacao loc;
     private Boolean count_aux;
     private Switch swtRodovia;
-    private Button btnAddCusto;
-    private Button btnLogout;
+    private CheckBox cbCC;
+    private EditText edtCC;
     public static Activity _tela;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -152,6 +159,7 @@ public class logadoMotorista extends AppCompatActivity {
                 if(state == true){
                     btnBDV.setBackgroundColor(Color.RED);
                     btnBDV.setText(getString(R.string.btnFimBdv));
+                    btnSyncBdv.setEnabled(false);
                     spnrServicos.setEnabled(false);
                     state = false;
 
@@ -172,28 +180,54 @@ public class logadoMotorista extends AppCompatActivity {
                     loc.startLocationUpdate();
 
                 }else if(state == false){
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    String hour = format.format(new Date());
-                    BDV.setHora_final(hour);
-
-                    bdvTimer.stop();
-                    bdvTimer.setText("00:00");
-                    resume = false;
-
-                    AssinaturasBDV.getInstance();
-
-                    if(!AssinaturasBDV.isVazio()) {
-                        Intent intent = new Intent(getApplicationContext(), kmFinal.class);
-                        startActivity(intent);
-                        //startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1);
-                    }else{
-                        Toast.makeText(getApplicationContext(), getString(R.string.msg_lista_ass_vazia),Toast.LENGTH_LONG).show();
-                    }
-
-                    Comunicator.getInstance();
-                    Comunicator.clear();
-                    Comunicator.addObject("Localizacao", loc);
-
+                    new AlertDialog.Builder(logadoMotorista.this)
+                        .setTitle("Finalizar rota")
+                        .setMessage("Deseja mesmo finalizar a rota?")
+                        .setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                AssinaturasBDV.getInstance();
+                                Comunicator.getInstance();
+                                Comunicator.clear();
+                                Comunicator.addObject("Localizacao", loc);
+                                if(!AssinaturasBDV.isVazio()) {
+                                    if(cbCC.isChecked() && !edtCC.getText().toString().isEmpty()) {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                                        String hour = format.format(new Date());
+                                        BDV.setHora_final(hour);
+                                        BDV.setCentro_custo(edtCC.getText().toString());
+                                        bdvTimer.stop();
+                                        bdvTimer.setText("00:00");
+                                        resume = false;
+                                        Intent intent = new Intent(getApplicationContext(), kmFinal.class);
+                                        startActivity(intent);
+                                        logadoMotorista._tela.finish();
+                                        //startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1);
+                                    }else if(!cbCC.isChecked()){
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                                        String hour = format.format(new Date());
+                                        BDV.setHora_final(hour);
+                                        BDV.setCentro_custo(VeiculoConfig.getCentro_custo());
+                                        bdvTimer.stop();
+                                        bdvTimer.setText("00:00");
+                                        resume = false;
+                                        Intent intent = new Intent(getApplicationContext(), kmFinal.class);
+                                        startActivity(intent);
+                                        logadoMotorista._tela.finish();
+                                    }else{
+                                        edtCC.setError(getString(R.string.campo_obrigatorio));
+                                    }
+                                }else{
+                                    Toast.makeText(getApplicationContext(), getString(R.string.msg_lista_ass_vazia),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 }else{}
             }
         });
@@ -201,20 +235,32 @@ public class logadoMotorista extends AppCompatActivity {
         this.btnSyncBdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    BancoDados db = new BancoDados(getApplicationContext());
-                    Boolean _statusBDV = db.checkStatusBDV();
-                    Boolean _statusCL = db.checkStatusCheckin();
-                    Boolean _statusHE = db.checkStatusHoraExtra();
-                    Boolean _statusCM = db.checkStatusCustosMotorista();
-                    if( _statusBDV || _statusCL || _statusHE || _statusCM) {
-                        startActivity(new Intent(getApplicationContext(), loadingSyncBDV.class));
+                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mWifi.isConnected()) {
+                    if(mWifi.getExtraInfo().equals(getString(R.string.WIFI_NAME))){
+                        try {
+                            BancoDados db = new BancoDados(getApplicationContext());
+                            Boolean _statusBDV = db.checkStatusBDV();
+                            Boolean _statusCL = db.checkStatusCheckin();
+                            Boolean _statusHE = db.checkStatusHoraExtra();
+                            Boolean _statusCM = db.checkStatusCustosMotorista();
+                            if( _statusBDV || _statusCL || _statusHE || _statusCM) {
+                                startActivity(new Intent(getApplicationContext(), loadingSyncBDV.class));
+                            }else{
+                                Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }else{
-                        Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.erro_nome_wifi), Toast.LENGTH_LONG).show();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }else{
+                    Toast.makeText(getApplicationContext(), getString(R.string.erro_nome_wifi), Toast.LENGTH_LONG).show();
                 }
+
             }
         });
 
@@ -230,22 +276,17 @@ public class logadoMotorista extends AppCompatActivity {
             }
         });
 
-        this.btnAddCusto = (Button) findViewById(R.id.btnAddCusto);
-        this.btnAddCusto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), cadastroCustoMotorista.class));
-            }
-        });
+        this.edtCC = (EditText)findViewById(R.id.edtCentroCusto);
+        this.edtCC.setEnabled(false);
 
-        this.btnLogout = (Button) findViewById(R.id.btnLogout);
-        this.btnLogout.setOnClickListener(new View.OnClickListener() {
+        this.cbCC = (CheckBox)findViewById(R.id.cbCentroCusto);
+        this.cbCC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    deslogar();
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if(cbCC.isChecked()){
+                    edtCC.setEnabled(true);
+                }else{
+                    edtCC.setEnabled(false);
                 }
             }
         });
@@ -257,15 +298,69 @@ public class logadoMotorista extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), getString(R.string.msg_botao_voltar), Toast.LENGTH_LONG).show();
             count_aux = true;
         }else{
-            try {
-                deslogar();
-            } catch (ParseException e) {
-                Log.e("", e.getMessage());
-            }
+            deslogar();
         }
     }
 
-    public void deslogar() throws ParseException {
+    @Override
+    public void onResume() {
+        super.onResume();
+        setaInfoSync();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuItem m1 = menu.add(0,0,0,"REGISTRAR CUSTO DIÁRIO");
+        m1.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        MenuItem m2 = menu.add(0,1,1,"ALTERAR SENHA");
+        m2.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        MenuItem m3 = menu.add(0,2,2,"SAIR");
+        m3.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int parse, MenuItem id){
+
+        switch(id.getItemId()){
+            case 0:
+                if(state){
+                    startActivity(new Intent(getApplicationContext(), cadastroCustoMotorista.class));
+                }else Toast.makeText(getApplicationContext(), getString(R.string.msg_finalize_rota), Toast.LENGTH_LONG).show();
+                break;
+            case 1:
+                if(state){
+                    startActivity(new Intent(getApplicationContext(), alteraSenha.class));
+                }else Toast.makeText(getApplicationContext(), getString(R.string.msg_finalize_rota), Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                if(state){
+                    new AlertDialog.Builder(logadoMotorista.this)
+                        .setTitle("Encerrar Sessão")
+                            .setMessage("Deseja mesmo sair?")
+                            .setPositiveButton("Sair", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deslogar();
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }else Toast.makeText(getApplicationContext(), getString(R.string.msg_finalize_rota), Toast.LENGTH_LONG).show();
+                break;
+        }
+        return true;
+    }
+
+    public void deslogar() {
         BDV.resetBDV();
         AssinaturasBDV.clear();
         Trajeto.clear();
@@ -279,27 +374,25 @@ public class logadoMotorista extends AppCompatActivity {
         String dia_semana = simpleDateformat.format(new Date());
 
         BancoDados bd = new BancoDados(getApplicationContext());
-        if(bd.insereHoraExtra(
-                Motorista.get_matricula(),
-                Motorista.getHora_login(),
-                Motorista.getHora_logout(),
-                Motorista.getHora_peimeira_rota(),
-                Motorista.getHora_ultima_rota(),
-                Motorista.getDifLogado(),
-                Motorista.getDifRota(),
-                dia_semana
-                )){
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            logadoMotorista._tela.finish();
-        }else{
-            Toast.makeText(getApplicationContext(), getString(R.string.erro_logout), Toast.LENGTH_LONG).show();
+        try {
+            if(bd.insereHoraExtra(
+                    Motorista.get_matricula(),
+                    Motorista.getHora_login(),
+                    Motorista.getHora_logout(),
+                    Motorista.getHora_peimeira_rota(),
+                    Motorista.getHora_ultima_rota(),
+                    Motorista.getDifLogado(),
+                    Motorista.getDifRota(),
+                    dia_semana
+            )){
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                logadoMotorista._tela.finish();
+            }else{
+                Toast.makeText(getApplicationContext(), getString(R.string.erro_logout), Toast.LENGTH_LONG).show();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setaInfoSync();
     }
 
 

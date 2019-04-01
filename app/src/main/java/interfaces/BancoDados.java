@@ -45,6 +45,7 @@ public class BancoDados extends SQLiteOpenHelper{
     private static final String tabelaAssinatura = "assinatura";
     private static final String tabelaHoraExtra = "hora_extra";
     private static final String tabelaCustosMotorista = "custos_motorista";
+    private static final String tabelaUltimoKm = "ultimo_km";
 
 
     public BancoDados(Context context) {
@@ -88,7 +89,8 @@ public class BancoDados extends SQLiteOpenHelper{
                 "km_rodovia real,\n"+
                 "servico text,\n"+
                 "reserva boolean,\n"+
-                "placaReserva text,\n"+
+                "placaReserva text,\n" +
+                "centro_custo text, \n"+
                 "sincronizado boolean\n"+
         ");";
         sqLiteDatabase.execSQL(sqlTable2);
@@ -128,7 +130,8 @@ public class BancoDados extends SQLiteOpenHelper{
         "create table dadosConfig(\n"+
                 "veiculoCartela text,\n"+
                 "veiculoModelo text,\n"+
-                "veiculoPlaca text,\n"+
+                "veiculoPlaca text,\n" +
+                "centro_custo text, \n"+
                 "km real \n"+
         ");";
 
@@ -210,6 +213,13 @@ public class BancoDados extends SQLiteOpenHelper{
 
         sqLiteDatabase.execSQL(sqlTable8);
 
+        String sqlTable9 =
+                "create table ultimo_km(\n"+
+                        "ultimo_km float\n"+
+                        ");";
+
+        sqLiteDatabase.execSQL(sqlTable9);
+
     }
 
     @Override
@@ -222,6 +232,7 @@ public class BancoDados extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaAssinatura);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaCustosMotorista);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaHoraExtra);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS" + tabelaUltimoKm);
 
         onCreate(sqLiteDatabase);
     }
@@ -268,7 +279,7 @@ public class BancoDados extends SQLiteOpenHelper{
 
     public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
                              Float kmInicial, Float kmFinal, Float kmTotal, Double kmCalculado, Double kmRodovia,
-                             Double kmCidade, Boolean reserva, String placaReserva, String servico){
+                             Double kmCidade, Boolean reserva, String placaReserva, String centro_custo, String servico){
 
         ContentValues valores = new ContentValues();
 
@@ -286,6 +297,7 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("servico", servico);
         valores.put("reserva", reserva);
         valores.put("placaReserva", placaReserva);
+        valores.put("centro_custo", centro_custo);
         valores.put("sincronizado", false);
 
         SQLiteDatabase db = getWritableDatabase();
@@ -329,8 +341,6 @@ public class BancoDados extends SQLiteOpenHelper{
     }
 
     public boolean logaMotorista(String matricula, String senha){
-
-
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 tabelaMotorista,
@@ -341,7 +351,6 @@ public class BancoDados extends SQLiteOpenHelper{
                 null,
                 null
         );
-
 
         if(cursor.moveToFirst()){
             Integer _id = cursor.getInt(cursor.getColumnIndex("motoristaID"));
@@ -360,7 +369,25 @@ public class BancoDados extends SQLiteOpenHelper{
         return false;
     }
 
-    public boolean insereVeiculo(String cartela, String modelo, String placa){
+    public boolean checaSenha(String matricula, String senha){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                tabelaMotorista,
+                new String[]{"motoristaID", "matricula","nome","rg","cpf"},
+                new String ("matricula = ? AND senha = ?"),
+                new String[]{matricula, senha},
+                null,
+                null,
+                null
+        );
+        if(cursor.moveToFirst()){
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean insereVeiculo(String cartela, String modelo, String placa, String centro_custo){
         SQLiteDatabase db = getWritableDatabase(); // helper is object extends SQLiteOpenHelper
         if(db.delete(tabelaDadosConfig, null, null)>=0){
             ContentValues valores;
@@ -369,6 +396,7 @@ public class BancoDados extends SQLiteOpenHelper{
             valores.put("veiculoCartela", cartela);
             valores.put("veiculoModelo", modelo);
             valores.put("veiculoPlaca", placa);
+            valores.put("centro_custo", centro_custo);
 
             return db.insert(tabelaDadosConfig, null, valores) != -1;
 
@@ -418,7 +446,8 @@ public class BancoDados extends SQLiteOpenHelper{
             VeiculoConfig.setInstance(
                     cursor.getString(cursor.getColumnIndex("veiculoCartela")),
                     cursor.getString(cursor.getColumnIndex("veiculoModelo")),
-                    cursor.getString(cursor.getColumnIndex("veiculoPlaca"))
+                    cursor.getString(cursor.getColumnIndex("veiculoPlaca")),
+                    cursor.getString(cursor.getColumnIndex("centro_custo"))
             );
             return true;
         }
@@ -433,6 +462,51 @@ public class BancoDados extends SQLiteOpenHelper{
         }
 
         return false;
+    }
+
+    public boolean atualizaUltimoKM(Float ultimo_km){
+        SQLiteDatabase dbw = getWritableDatabase();
+        SQLiteDatabase dbr = getReadableDatabase();
+
+        Cursor cursor = dbr.query(
+                tabelaUltimoKm,
+                new String[]{"*"},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if(cursor.moveToFirst()){
+            ContentValues values = new ContentValues();
+            values.put("ultimo_km", ultimo_km);
+            return dbw.update(tabelaUltimoKm, values,null, null) != -1;
+        }else{
+            ContentValues values = new ContentValues();
+            values.put("ultimo_km", ultimo_km);
+            return dbw.insert(tabelaUltimoKm, null,values) != -1;
+        }
+    }
+
+    public Float getUltimoKM(){
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                tabelaUltimoKm,
+                new String[]{"*"},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if(cursor.moveToFirst()){
+            return cursor.getFloat(cursor.getColumnIndex("ultimo_km"));
+        }else{
+            return (float) 0;
+        }
     }
 
     public void atualizaMotoristas(JSONArray mots, Context context) throws JSONException {
@@ -484,6 +558,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("km_rodovia", cursor.getString(cursor.getColumnIndex("km_rodovia")));
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
                 jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
+                jo.put("centro_custo", cursor.getString(cursor.getColumnIndex("centro_custo")));
                 jo.put("servico", cursor.getString(cursor.getColumnIndex("servico")));
                 jo.put("assinaturas", getJSONArrayAss( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
                 jo.put("rota", getJSONArrayCoord( cursor.getInt(cursor.getColumnIndex("bdvID")) ));
@@ -756,6 +831,19 @@ public class BancoDados extends SQLiteOpenHelper{
         ContentValues values =new ContentValues();
         values.put("sincronizado", true);
         return db.update(tabelaCustosMotorista, values, new String ("sincronizado = ?"), new String[]{"0"}) != -1;
+    }
+
+    public Boolean atualizaSenhaMotorista(String matricula, String nova_senha){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("senha", nova_senha);
+        int result = db.update(
+                tabelaMotorista,
+                values,
+                new String ("matricula = ?"),
+                new String[]{matricula});
+
+        return result != -1;
     }
 
     public Boolean checkStatusBDV(){

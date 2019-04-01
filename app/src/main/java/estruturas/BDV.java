@@ -15,6 +15,7 @@ public final class BDV {
     private static String servico;
     private static Boolean reserva;
     private static String placaReserva;
+    private static String centro_custo;
     private static byte[] foto;
 
     private BDV(){}
@@ -101,6 +102,14 @@ public final class BDV {
 
     public static void setPlacaReserva(String placaReserva) {
         BDV.placaReserva = placaReserva;
+    }
+
+    public static String getCentro_custo() {
+        return centro_custo;
+    }
+
+    public static void setCentro_custo(String centro_custo) {
+        BDV.centro_custo = centro_custo;
     }
 
     public static byte[] getFoto() {

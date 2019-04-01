@@ -30,7 +30,7 @@ import estruturas.Motorista;
 import estruturas.VeiculoConfig;
 import interfaces.Localizacao;
 
-public class kmFinal extends AppCompatActivity {
+public class kmFinal extends Activity {
     private Button btnKmFinal;
     private EditText edtKmFinal;
     private TextView txtMotoristaLogado;
@@ -91,6 +91,7 @@ public class kmFinal extends AppCompatActivity {
                                     dist.get("CIDADE"),
                                     BDV.getReserva(),
                                     BDV.getPlacaReserva(),
+                                    BDV.getCentro_custo(),
                                     BDV.getServico()
                             )){
                                 Integer bdvID = db.ultimoID(BancoDados.getTabelaBdv());
@@ -106,6 +107,8 @@ public class kmFinal extends AppCompatActivity {
                                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                                     String hour = format.format(new Date());
                                     Motorista.setHora_ultima_rota(hour);
+
+                                    db.atualizaUltimoKM(KmFinal);
 
                                     Comunicator.getInstance();
                                     Localizacao loc = (Localizacao) Comunicator.getItem("Localizacao");

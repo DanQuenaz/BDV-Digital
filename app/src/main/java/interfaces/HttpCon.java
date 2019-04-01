@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.car.vale.bdvdigital.alteraSenha;
 import com.car.vale.bdvdigital.loadingSyncBDV;
 import com.car.vale.bdvdigital.veiculoConfig;
 
@@ -240,7 +241,7 @@ public class HttpCon {
         rq.add(cjar);
     }
 
-    public void CallPassWordAdmRequest(final Context context, String senha, final String cartela, final String modelo, final String placa){
+    public void CallPassWordAdmRequest(final Context context, String senha, final String cartela, final String modelo, final String placa, final String cc){
         final BancoDados db = new BancoDados(context);
         this.params = new HashMap<String, String>();
         this.params.put("OPX_GET_PSWRD", senha);
@@ -255,7 +256,7 @@ public class HttpCon {
                         String aux[] = response.split("#");
                         try {
                             if(aux[0].equals("OK")){
-                                if(db.insereVeiculo(cartela, modelo, placa)){
+                                if(db.insereVeiculo(cartela, modelo, placa, cc)){
                                     Toast.makeText(context, "Configuração atualizada com sucesso!", Toast.LENGTH_LONG).show();
                                     veiculoConfig._tela.finish();
                                 }else{
@@ -268,7 +269,6 @@ public class HttpCon {
                         } catch (Exception e) {
                             Log.i("",e.getMessage());
                         }
-
                     }
                 },
                 new Response.ErrorListener(){
@@ -278,10 +278,49 @@ public class HttpCon {
                     }
                 }
         );
-
         cjar.setTag("tag");
         rq.add(cjar);
     }
 
+    public void CallChangePasswordDriverRequest(final Context context, final String matricula, final String senha, String dados){
+        final BancoDados db = new BancoDados(context);
+        this.params = new HashMap<String, String>();
+        this.params.put("OPX_SET_MTR_PSWRD", dados);
+        CustomStringRequest cjar = new CustomStringRequest(
+                Method.POST,
+                this.url,
+                this.params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("", response);
+                        String aux[] = response.split("#");
+                        try {
+                            if(aux[0].equals("OK")){
+                                if(db.atualizaSenhaMotorista(matricula, senha)){
+                                    Toast.makeText(context, "Senha atualizada com sucesso!", Toast.LENGTH_LONG).show();
+                                    alteraSenha._tela.finish();
+                                }else{
+                                    Toast.makeText(context, "Erro ao atualizar senha!", Toast.LENGTH_LONG).show();
+                                }
+                            }else{
+                                Toast.makeText(context, "Senha incorreta!", Toast.LENGTH_LONG).show();
+                            }
+                            Log.i("#Script#", "onResponse: " + response);
+                        } catch (Exception e) {
+                            Log.i("",e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("ERORRR", "onResponse: " + error.getMessage());
+                    }
+                }
+        );
+        cjar.setTag("tag");
+        rq.add(cjar);
+    }
 
 }

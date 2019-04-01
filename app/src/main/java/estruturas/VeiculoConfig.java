@@ -4,6 +4,7 @@ public final class VeiculoConfig {
     private static String veiculoCartela = null;
     private static String veiculoModelo = null;
     private static String veiculoPlaca = null;
+    private static String centro_custo = null;
 
     private VeiculoConfig(){}
 
@@ -11,10 +12,11 @@ public final class VeiculoConfig {
         return veiculoCartela != null;
     }
 
-    public static void setInstance(String _cartela, String _modelo, String _placa){
+    public static void setInstance(String _cartela, String _modelo, String _placa, String _centro){
         veiculoCartela = _cartela;
         veiculoModelo = _modelo;
         veiculoPlaca = _placa;
+        centro_custo = _centro;
     }
 
     public static String getVeiculoCartela() {
@@ -39,5 +41,9 @@ public final class VeiculoConfig {
 
     public static void setVeiculoPlaca(String veiculoPlaca) {
         VeiculoConfig.veiculoPlaca = veiculoPlaca;
+    }
+
+    public static String getCentro_custo() {
+        return centro_custo;
     }
 }

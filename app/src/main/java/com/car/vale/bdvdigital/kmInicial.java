@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,8 +20,9 @@ import estruturas.BDV;
 import estruturas.Configuracao;
 import estruturas.Motorista;
 import estruturas.VeiculoConfig;
+import interfaces.BancoDados;
 
-public class kmInicial extends AppCompatActivity {
+public class kmInicial extends Activity {
     private EditText edtKminicial;
     private Button btnKminicial;
 
@@ -39,7 +42,11 @@ public class kmInicial extends AppCompatActivity {
 
         _tela = this;
 
+        BancoDados db = new BancoDados(getApplicationContext());
+
         this.edtKminicial = (EditText) findViewById(R.id.edtKmInicial);
+        this.edtKminicial.setText(db.getUltimoKM().toString());
+
         this.btnKminicial = (Button) findViewById(R.id.btnKmInicial);
 
         this.txtMotoristaLogado = (TextView)findViewById(R.id.txtMotorislaLogado);
@@ -101,5 +108,35 @@ public class kmInicial extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuItem m1 = menu.add(0,0,0,"SAIR");
+        m1.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int parse, MenuItem id){
+
+        switch(id.getItemId()){
+            case 0:
+                deslogar();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(kmInicial.this, MainActivity.class));
+        kmInicial._tela.finish();
+    }
+
+    private void deslogar(){
+        startActivity(new Intent(kmInicial.this, MainActivity.class));
+        kmInicial._tela.finish();
     }
 }
