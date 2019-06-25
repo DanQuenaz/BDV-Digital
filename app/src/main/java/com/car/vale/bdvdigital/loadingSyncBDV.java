@@ -9,8 +9,6 @@ import android.widget.ImageView;
 
 import org.json.JSONException;
 
-import estruturas.ThreadUploadDados;
-import estruturas.UploadStatus;
 import interfaces.HttpCon;
 
 public class loadingSyncBDV extends AppCompatActivity {
@@ -31,17 +29,9 @@ public class loadingSyncBDV extends AppCompatActivity {
 
         HttpCon ws = new HttpCon(loadingSyncBDV.this);
 
-        ThreadUploadDados thread = new ThreadUploadDados();
-        thread.start();
-
         try {
-            if(!UploadStatus.get_bdv()) ws.CallBDVRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados), getString(R.string.msg_erro_conexao_servidor));
+            ws.uploadDataRquest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados), getString(R.string.msg_erro_conexao_servidor));
 
-            if(!UploadStatus.get_checklist()) ws.CallCheckListRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados), getString(R.string.msg_erro_conexao_servidor));
-
-            if(!UploadStatus.get_horaextra()) ws.CallHoraExtraRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados), getString(R.string.msg_erro_conexao_servidor));
-
-            if(!UploadStatus.get_custosmotorista()) ws.CallCustosMotoristaRequest(loadingSyncBDV.this, getString(R.string.msg_bdvs_sincronizados), getString(R.string.msg_erro_conexao_servidor));
         } catch (JSONException e) {
             Log.e("", e.getMessage());
         }

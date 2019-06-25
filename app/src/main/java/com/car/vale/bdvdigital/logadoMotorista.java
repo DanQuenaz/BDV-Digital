@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -157,27 +159,35 @@ public class logadoMotorista extends Activity {
             @Override
             public void onClick(View view) {
                 if(state == true){
-                    btnBDV.setBackgroundColor(Color.RED);
-                    btnBDV.setText(getString(R.string.btnFimBdv));
-                    btnSyncBdv.setEnabled(false);
-                    spnrServicos.setEnabled(false);
-                    state = false;
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    boolean GPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-                    BDV.setServico((String)spnrServicos.getSelectedItem());
+                    if(!GPSEnabled){
+                        //startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        Toast.makeText(getApplicationContext(), getString(R.string.msg_ativa_gps), Toast.LENGTH_LONG).show();
+                    }else {
+                        btnBDV.setBackgroundColor(Color.RED);
+                        btnBDV.setText(getString(R.string.btnFimBdv));
+                        btnSyncBdv.setEnabled(false);
+                        spnrServicos.setEnabled(false);
+                        state = false;
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    String hour = format.format(new Date());
-                    BDV.setHora_inicial(hour);
-                    Motorista.setHora_peimeira_rota(hour);
+                        BDV.setServico((String) spnrServicos.getSelectedItem());
 
-                    if(!resume){
-                        bdvTimer.setBase(SystemClock.elapsedRealtime());
-                        bdvTimer.start();
-                    }else{
-                        bdvTimer.start();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        String hour = format.format(new Date());
+                        BDV.setHora_inicial(hour);
+                        Motorista.setHora_peimeira_rota(hour);
+
+                        if (!resume) {
+                            bdvTimer.setBase(SystemClock.elapsedRealtime());
+                            bdvTimer.start();
+                        } else {
+                            bdvTimer.start();
+                        }
+
+                        loc.startLocationUpdate();
                     }
-
-                    loc.startLocationUpdate();
 
                 }else if(state == false){
                     new AlertDialog.Builder(logadoMotorista.this)
@@ -235,32 +245,24 @@ public class logadoMotorista extends Activity {
         this.btnSyncBdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-                if (mWifi.isConnected()) {
-                    if(mWifi.getExtraInfo().equals(getString(R.string.WIFI_NAME))){
-                        try {
-                            BancoDados db = new BancoDados(getApplicationContext());
-                            Boolean _statusBDV = db.checkStatusBDV();
-                            Boolean _statusCL = db.checkStatusCheckin();
-                            Boolean _statusHE = db.checkStatusHoraExtra();
-                            Boolean _statusCM = db.checkStatusCustosMotorista();
-                            if( _statusBDV || _statusCL || _statusHE || _statusCM) {
-                                startActivity(new Intent(getApplicationContext(), loadingSyncBDV.class));
-                            }else{
-                                Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if (checaWIFI()) {
+                    try {
+                        BancoDados db = new BancoDados(getApplicationContext());
+                        Boolean _statusBDV = db.checkStatusBDV();
+                        Boolean _statusCL = db.checkStatusCheckin();
+                        Boolean _statusHE = db.checkStatusHoraExtra();
+                        Boolean _statusCM = db.checkStatusCustosMotorista();
+                        if( _statusBDV || _statusCL || _statusHE || _statusCM) {
+                            startActivity(new Intent(getApplicationContext(), loadingSyncBDV.class));
+                        }else{
+                            Toast.makeText(getApplicationContext(), getString(R.string.msg_sem_bdv_dessincronizado), Toast.LENGTH_LONG).show();
                         }
-                    }else{
-                        Toast.makeText(getApplicationContext(), getString(R.string.erro_nome_wifi), Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), getString(R.string.erro_nome_wifi), Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
@@ -294,12 +296,14 @@ public class logadoMotorista extends Activity {
 
     @Override
     public void onBackPressed(){
-        if(!count_aux){
-            Toast.makeText(getApplicationContext(), getString(R.string.msg_botao_voltar), Toast.LENGTH_LONG).show();
-            count_aux = true;
-        }else{
-            deslogar();
-        }
+        if(state) {
+            if (!count_aux) {
+                Toast.makeText(getApplicationContext(), getString(R.string.msg_botao_voltar), Toast.LENGTH_LONG).show();
+                count_aux = true;
+            } else {
+                deslogar();
+            }
+        }else Toast.makeText(getApplicationContext(), getString(R.string.msg_finalize_rota), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -333,7 +337,9 @@ public class logadoMotorista extends Activity {
                 break;
             case 1:
                 if(state){
-                    startActivity(new Intent(getApplicationContext(), alteraSenha.class));
+                    if(checaWIFI()) {
+                        startActivity(new Intent(getApplicationContext(), alteraSenha.class));
+                    }else Toast.makeText(getApplicationContext(), getString(R.string.erro_nome_wifi), Toast.LENGTH_LONG).show();
                 }else Toast.makeText(getApplicationContext(), getString(R.string.msg_finalize_rota), Toast.LENGTH_LONG).show();
                 break;
             case 2:
@@ -407,6 +413,15 @@ public class logadoMotorista extends Activity {
             layoutInSync.setBackgroundColor(Color.GREEN);
             edtInfoSync.setText(R.string.info_todos_dados_sync);
         }
+    }
+
+    private boolean checaWIFI(){
+
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        return mWifi.isConnected() && mWifi.getExtraInfo().equals(getString(R.string.WIFI_NAME));
+
     }
 
     /*@Override

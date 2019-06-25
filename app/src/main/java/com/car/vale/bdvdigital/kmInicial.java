@@ -53,7 +53,7 @@ public class kmInicial extends Activity {
         this.txtInfoVeiculo = (TextView)findViewById(R.id.txtInfoVeiculo);
 
         this.txtMotoristaLogado.setText(Motorista.get_nome());
-        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
+        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nFrota: "+VeiculoConfig.getVeiculoCartela() );
 
         this.cbReserva = (CheckBox)findViewById(R.id.cbReserva);
         this.edtReserva = (EditText)findViewById(R.id.edtPlacaReserva);

@@ -49,7 +49,7 @@ public class CheckList extends Activity {
         this.txtInfoVeiculo = (TextView)findViewById(R.id.pctAge);
 
         this.txtMotoristaLogado.setText(Motorista.get_nome());
-        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
+        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nFrota: "+VeiculoConfig.getVeiculoCartela() );
 
         this.edtObsCheckList = (EditText) findViewById(R.id.edtObsCheckList);
 

@@ -86,7 +86,8 @@ public class BancoDados extends SQLiteOpenHelper{
                 "km_total real,\n" +
                 "km_calculado real,\n" +
                 "km_cidade real,\n" +
-                "km_rodovia real,\n"+
+                "km_rodovia real,\n" +
+                "velocidade_media real,\n"+
                 "servico text,\n"+
                 "reserva boolean,\n"+
                 "placaReserva text,\n" +
@@ -279,7 +280,7 @@ public class BancoDados extends SQLiteOpenHelper{
 
     public boolean insereBDV(String motoristaNome, Integer motoristaID, String veiculo, String horaInicial, String horaFinal,
                              Float kmInicial, Float kmFinal, Float kmTotal, Double kmCalculado, Double kmRodovia,
-                             Double kmCidade, Boolean reserva, String placaReserva, String centro_custo, String servico){
+                             Double kmCidade, Double velocidade_media, Boolean reserva, String placaReserva, String centro_custo, String servico){
 
         ContentValues valores = new ContentValues();
 
@@ -294,6 +295,7 @@ public class BancoDados extends SQLiteOpenHelper{
         valores.put("km_calculado", kmCalculado);
         valores.put("km_cidade", kmCidade);
         valores.put("km_rodovia", kmRodovia);
+        valores.put("velocidade_media", velocidade_media);
         valores.put("servico", servico);
         valores.put("reserva", reserva);
         valores.put("placaReserva", placaReserva);
@@ -430,6 +432,7 @@ public class BancoDados extends SQLiteOpenHelper{
 
     }
 
+
     public boolean setVeiculoConfig(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -442,7 +445,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 null
         );
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             VeiculoConfig.setInstance(
                     cursor.getString(cursor.getColumnIndex("veiculoCartela")),
                     cursor.getString(cursor.getColumnIndex("veiculoModelo")),
@@ -451,6 +454,7 @@ public class BancoDados extends SQLiteOpenHelper{
             );
             return true;
         }
+
 
         return false;
     }
@@ -530,7 +534,21 @@ public class BancoDados extends SQLiteOpenHelper{
         }
     }
 
-    public String getJSONArrayBDVs() throws JSONException {
+    public String getAllData() throws  JSONException {
+        JSONArray ja = new JSONArray();
+        JSONObject jo = new JSONObject();
+
+        jo.put("bdv", getJSONArrayBDVs());
+        jo.put("check_list", getJSONArrayCheckList());
+        jo.put("hora_extra", getJSONArrayHoraExtra());
+        jo.put("custo_motorista", getJSONArrayCustosMotorista());
+
+        ja.put(jo);
+
+        return ja.toString();
+    }
+
+    public JSONArray getJSONArrayBDVs() throws JSONException {
         JSONArray ja = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -556,6 +574,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 jo.put("km_calculado", cursor.getString(cursor.getColumnIndex("km_calculado")));
                 jo.put("km_cidade", cursor.getString(cursor.getColumnIndex("km_cidade")));
                 jo.put("km_rodovia", cursor.getString(cursor.getColumnIndex("km_rodovia")));
+                jo.put("velocidade_media", cursor.getString(cursor.getColumnIndex("velocidade_media")));
                 jo.put("reserva", cursor.getShort(cursor.getColumnIndex("reserva")));
                 jo.put("placa_reserva", cursor.getString(cursor.getColumnIndex("placaReserva")));
                 jo.put("centro_custo", cursor.getString(cursor.getColumnIndex("centro_custo")));
@@ -566,8 +585,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 ja.put(jo);
             }while(cursor.moveToNext());
             cursor.close();
-            Log.i("", ja.toString());
-            return ja.toString();
+            return ja;
         }
         return null;
     }
@@ -627,7 +645,7 @@ public class BancoDados extends SQLiteOpenHelper{
         return null;
     }
 
-    public String getJSONArrayCheckList() throws JSONException{
+    public JSONArray getJSONArrayCheckList() throws JSONException{
         JSONArray ja = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -679,13 +697,12 @@ public class BancoDados extends SQLiteOpenHelper{
                 ja.put(jo);
             }while(cursor.moveToNext());
             cursor.close();
-            Log.i("", ja.toString());
-            return ja.toString();
+            return ja;
         }
         return null;
     }
 
-    public String getJSONArrayHoraExtra() throws JSONException{
+    public JSONArray getJSONArrayHoraExtra() throws JSONException{
         JSONArray ja = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -711,13 +728,12 @@ public class BancoDados extends SQLiteOpenHelper{
                 ja.put(jo);
             }while(cursor.moveToNext());
             cursor.close();
-            Log.i("", ja.toString());
-            return ja.toString();
+            return ja;
         }
         return null;
     }
 
-    public String getJSONArrayCustosMotorista() throws JSONException{
+    public JSONArray getJSONArrayCustosMotorista() throws JSONException{
         JSONArray ja = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -739,8 +755,7 @@ public class BancoDados extends SQLiteOpenHelper{
                 ja.put(jo);
             }while(cursor.moveToNext());
             cursor.close();
-            Log.i("JSONARRAY:", ja.toString());
-            return ja.toString();
+            return ja;
         }
         return null;
     }
@@ -803,6 +818,10 @@ public class BancoDados extends SQLiteOpenHelper{
         }
 
         return id;
+    }
+
+    public Boolean atulizaStatusDados(){
+        return atualizaStatusBDV() && atualizaStatusHoraExtra() && atualizaStatusCustosMotorista() && atualizaStatusCheckin();
     }
 
     public Boolean atualizaStatusBDV(){

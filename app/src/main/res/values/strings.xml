@@ -88,6 +88,7 @@
     <string name="erro_nome_wifi">É necessário estar conectado a rede V-DATA para sincronização dos dados.</string>
     <string name="msg_finalize_rota">Finalize a rota antes de realizar esta operação.</string>
     <string name="erro_senha_diferente">Senhas não conferem!</string>
+    <string name="msg_ativa_gps">Ligue o GPS antes de iniciar a rota.</string>
 
     <string name="WIFI_NAME">\"Pimentel\"</string>
 

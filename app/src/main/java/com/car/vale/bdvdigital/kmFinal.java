@@ -50,7 +50,7 @@ public class kmFinal extends Activity {
         this.txtInfoVeiculo = (TextView)findViewById(R.id.pctAge1);
 
         this.txtMotoristaLogado.setText(Motorista.get_nome());
-        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nCartela: "+VeiculoConfig.getVeiculoCartela() );
+        this.txtInfoVeiculo.setText("Veículo: "+ VeiculoConfig.getVeiculoModelo() + " Placa:" + VeiculoConfig.getVeiculoPlaca()+"\nFrota: "+VeiculoConfig.getVeiculoCartela() );
 
         this.btnKmFinal = (Button)findViewById(R.id.btnKmFinal);
         this.edtKmFinal = (EditText)findViewById(R.id.edtKmFinal);
@@ -89,6 +89,7 @@ public class kmFinal extends Activity {
                                     dist.get("TOTAL"),
                                     dist.get("RODOVIA"),
                                     dist.get("CIDADE"),
+                                    dist.get("VELOCIDADE"),
                                     BDV.getReserva(),
                                     BDV.getPlacaReserva(),
                                     BDV.getCentro_custo(),
@@ -131,5 +132,10 @@ public class kmFinal extends Activity {
         });
 
         //Toast.makeText(getApplicationContext(), (String)Comunicator.getItem("horaFinal"), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed(){
+
     }
 }

@@ -30,8 +30,8 @@ public class HttpCon {
     private RequestQueue rq;
 
     public HttpCon(Context context){
-        this.url = "https://www.ammeletricistas.com.br/others/bdv_request.php";
         //this.url = "http://172.26.102.129/bdv_digital/app_request/bdv_request.php";
+        this.url = "http://192.168.2.11/bdv_digital/app_request/bdv_request.php";
         this.rq = Volley.newRequestQueue(context);
     }
 
@@ -93,10 +93,10 @@ public class HttpCon {
         rq.add(cjar);
     }
 
-    public void CallBDVRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+    public void uploadDataRquest(final Context context, final String msgOK, final String msgErro) throws JSONException {
         final BancoDados db = new BancoDados(context);
         this.params = new HashMap<String, String>();
-        this.params.put("OPX_SET_BDV", db.getJSONArrayBDVs());
+        this.params.put("OPX_SET_3304", db.getAllData());
         CustomStringRequest cjar = new CustomStringRequest(
                 Method.POST,
                 this.url,
@@ -104,13 +104,17 @@ public class HttpCon {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("CHECK_BDV", response);
+                        Log.e("STATUS UPLOAD DATA", response);
                         try {
                             if(response.equals("1#")){
-                                if(db.atualizaStatusBDV()){
-                                    UploadStatus.set_bdv(true);
+                                if(db.atulizaStatusDados()){
+                                    //UploadStatus.set_bdv(true);
+                                    loadingSyncBDV._tela.finish();
                                     Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
                                 }
+                            }else{
+                                loadingSyncBDV._tela.finish();
+                                Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             Log.e("Erro rede: ", e.getMessage());
@@ -121,6 +125,7 @@ public class HttpCon {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("ERROR_BDV", "onResponse: " + error.getMessage());
+                        loadingSyncBDV._tela.finish();
                         Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
                     }
                 }
@@ -130,116 +135,153 @@ public class HttpCon {
         rq.add(cjar);
     }
 
-    public void CallCheckListRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
-        final BancoDados db = new BancoDados(context);
-        this.params = new HashMap<String, String>();
-        this.params.put("OPX_SET_CKL", db.getJSONArrayCheckList());
-        CustomStringRequest cjar = new CustomStringRequest(
-                Method.POST,
-                this.url,
-                this.params,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("CHECK_CL", response);
-                        try {
-                            if(response.equals("1#")){
-                                if(db.atualizaStatusCheckin()){
-                                    UploadStatus.set_checklist(true);
-                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e("Erro rede: ", e.getMessage());
-                        }
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("ERROR_CL", "onResponse: " + error.getMessage());
-                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        cjar.setTag("tag");
-        rq.add(cjar);
-    }
-
-    public void CallHoraExtraRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
-        final BancoDados db = new BancoDados(context);
-        this.params = new HashMap<String, String>();
-        this.params.put("OPX_SET_HRE", db.getJSONArrayHoraExtra());
-        CustomStringRequest cjar = new CustomStringRequest(
-                Method.POST,
-                this.url,
-                this.params,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("CHECK_HE", response);
-                        try {
-                            if(response.equals("1#")){
-                                if(db.atualizaStatusHoraExtra()){
-                                    UploadStatus.set_horaextra(true);
-                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e("Erro rede: ", e.getMessage());
-                        }
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("ERROR_HE", "onResponse: " + error.getMessage());
-                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        cjar.setTag("tag");
-        rq.add(cjar);
-    }
-
-    public void CallCustosMotoristaRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
-        final BancoDados db = new BancoDados(context);
-        this.params = new HashMap<String, String>();
-        this.params.put("OPX_SET_CSM", db.getJSONArrayCustosMotorista());
-        CustomStringRequest cjar = new CustomStringRequest(
-                Method.POST,
-                this.url,
-                this.params,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("CHECK_CM", response);
-                        try {
-                            if(response.equals("1#")){
-                                if(db.atualizaStatusCustosMotorista()){
-                                    UploadStatus.set_custosmotorista(true);
-                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e("Erro rede: ", e.getMessage());
-                        }
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("ERROR_CM", "onResponse: " + error.getMessage());
-                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        cjar.setTag("tag");
-        rq.add(cjar);
-    }
+//    public void CallBDVRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+//        final BancoDados db = new BancoDados(context);
+//        this.params = new HashMap<String, String>();
+//        this.params.put("OPX_SET_BDV", db.getJSONArrayBDVs());
+//        CustomStringRequest cjar = new CustomStringRequest(
+//                Method.POST,
+//                this.url,
+//                this.params,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("CHECK_BDV", response);
+//                        try {
+//                            if(response.equals("1#")){
+//                                if(db.atualizaStatusBDV()){
+//                                    UploadStatus.set_bdv(true);
+//                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e("Erro rede: ", e.getMessage());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("ERROR_BDV", "onResponse: " + error.getMessage());
+//                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//
+//        cjar.setTag("tag");
+//        rq.add(cjar);
+//    }
+//
+//    public void CallCheckListRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+//        final BancoDados db = new BancoDados(context);
+//        this.params = new HashMap<String, String>();
+//        this.params.put("OPX_SET_CKL", db.getJSONArrayCheckList());
+//        CustomStringRequest cjar = new CustomStringRequest(
+//                Method.POST,
+//                this.url,
+//                this.params,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("CHECK_CL", response);
+//                        try {
+//                            if(response.equals("1#")){
+//                                if(db.atualizaStatusCheckin()){
+//                                    UploadStatus.set_checklist(true);
+//                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e("Erro rede: ", e.getMessage());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("ERROR_CL", "onResponse: " + error.getMessage());
+//                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//
+//        cjar.setTag("tag");
+//        rq.add(cjar);
+//    }
+//
+//    public void CallHoraExtraRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+//        final BancoDados db = new BancoDados(context);
+//        this.params = new HashMap<String, String>();
+//        this.params.put("OPX_SET_HRE", db.getJSONArrayHoraExtra());
+//        CustomStringRequest cjar = new CustomStringRequest(
+//                Method.POST,
+//                this.url,
+//                this.params,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("CHECK_HE", response);
+//                        try {
+//                            if(response.equals("1#")){
+//                                if(db.atualizaStatusHoraExtra()){
+//                                    UploadStatus.set_horaextra(true);
+//                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e("Erro rede: ", e.getMessage());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("ERROR_HE", "onResponse: " + error.getMessage());
+//                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//
+//        cjar.setTag("tag");
+//        rq.add(cjar);
+//    }
+//
+//    public void CallCustosMotoristaRequest(final Context context, final String msgOK, final String msgErro) throws JSONException {
+//        final BancoDados db = new BancoDados(context);
+//        this.params = new HashMap<String, String>();
+//        this.params.put("OPX_SET_CSM", db.getJSONArrayCustosMotorista());
+//        CustomStringRequest cjar = new CustomStringRequest(
+//                Method.POST,
+//                this.url,
+//                this.params,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("CHECK_CM", response);
+//                        try {
+//                            if(response.equals("1#")){
+//                                if(db.atualizaStatusCustosMotorista()){
+//                                    UploadStatus.set_custosmotorista(true);
+//                                    Toast.makeText(context, msgOK, Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e("Erro rede: ", e.getMessage());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("ERROR_CM", "onResponse: " + error.getMessage());
+//                        Toast.makeText(context, msgErro, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//
+//        cjar.setTag("tag");
+//        rq.add(cjar);
+//    }
 
     public void CallPassWordAdmRequest(final Context context, String senha, final String cartela, final String modelo, final String placa, final String cc){
         final BancoDados db = new BancoDados(context);
